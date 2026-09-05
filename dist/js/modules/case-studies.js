@@ -1,0 +1,1 @@
+window.Atifinity=window.Atifinity||{},Atifinity.cloneCaseStripForLoop=function(){Atifinity.cloneStripForLoop(document.querySelector(".case-strip"))},Atifinity.initCaseStrip=function(){Atifinity.driveStripLoop(document.querySelector(".case-strip"),{speed:.7,direction:"rtl"})};

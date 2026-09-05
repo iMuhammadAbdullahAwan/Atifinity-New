@@ -1,0 +1,1 @@
+window.Atifinity=window.Atifinity||{},Atifinity.cloneReviewStripForLoop=function(){Atifinity.cloneStripForLoop(document.querySelector("[data-review-strip]"))},Atifinity.initReviewLoop=function(){Atifinity.driveStripLoop(document.querySelector("[data-review-strip]"),{speed:.8,direction:"ltr"})};

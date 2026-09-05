@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atifinity — YouTube Growth, Built End-to-End.</title>
+<meta name="description" content="Atifinity — Creative. Connected. Limitless. From the first idea to the final upload, we handle everything your channel needs to grow." />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#08090F" />
+
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
+<meta property="og:title" content="Atifinity — YouTube Growth, Built End-to-End." />
+<meta property="og:description" content="Research. Strategy. Content. Production. Optimization. Growth." />
+<meta property="og:image" content="assets/brand/og-cover.svg" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Atifinity",
+  "logo": "assets/brand/logo.svg",
+  "description": "Atifinity plans, researches, scripts, produces, and manages YouTube content for creators and brands — end to end.",
+  "contactPoint": { "@type": "ContactPoint", "email": "hello@atifinity.studio", "contactType": "sales" }
+}
+</script>
+
+<!-- Geist / Geist Mono — self-hosted (same family the reference site
+     uses), so there's no Google Fonts round-trip at all. -->
+<link rel="preload" href="assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/geist-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+<link rel="preload" as="image" href="assets/portfolio/posters/america-bridge.jpg" fetchpriority="high" />
+
+<!-- Compiled by `npm run build` from src/css/input.css — never edited by hand. -->
+<link rel="stylesheet" href="dist/css/output.css" />
+</head>
+<body class="bg-base text-ink overflow-x-hidden">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-sm focus:bg-panel focus:px-4 focus:py-2 focus:text-small">Skip to content</a>
+
+<!-- ================= BRAND PARTICLE FIELD =================
+     The reference site's own background: a full-bleed canvas of small
+     glowing nodes connected by faint lines, always present behind every
+     section — rebuilt in Atifinity's red/blue system instead of the
+     reference's purple/pink, on a plain <canvas> (no particle library —
+     see background-motion.js for the ~80-line vanilla implementation).
+     Fixed + pointer-events-none + aria-hidden; density and opacity are
+     tuned so it reads as clearly alive without ever competing with
+     foreground text. -->
+<div id="brandAtmosphere" aria-hidden="true"></div>
+<canvas id="brandField" aria-hidden="true"></canvas>
+<div id="contextCursor" aria-hidden="true"></div>
+
+<div id="cursorGlow" class="pointer-events-none fixed left-0 top-0 z-30 h-80 w-80 rounded-full opacity-0 mix-blend-screen" style="transition: opacity 0.4s ease; background: radial-gradient(circle, rgba(30,60,255,0.14), transparent 70%);" aria-hidden="true"></div>
+
+<!-- ================= HEADER ================= -->
+<header id="siteHeader" class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300">
+  <div class="container-x">
+    <nav class="flex items-center justify-between py-5" aria-label="Primary">
+      <a href="#top" class="flex items-center shrink-0 text-ink" aria-label="Atifinity home">
+        <svg viewBox="0 0 172 40" width="150" height="34" class="header-mark h-7 w-auto sm:h-8" role="img" aria-hidden="true">
+          <path d="M20,4 L4,35 L12,35 L25,14 Z" fill="#E32227"/>
+          <path d="M27.5,16 L36,35 L28.5,35 L22,22 Z" fill="#1E3CFF"/>
+          <path d="M18,28 L25,28 L27,35 L13.5,35 Z" fill="#1E3CFF"/>
+          <text x="48" y="27" font-family="Archivo, sans-serif" font-size="19" font-weight="700" letter-spacing="0.01em" fill="currentColor">atifinity</text>
+        </svg>
+      </a>
+
+      <ul id="navLinks" class="hidden items-center gap-8 lg:flex">
+        <li><a href="#services" class="nav-link" data-nav>Services</a></li>
+        <li><a href="#work" class="nav-link" data-nav>Work</a></li>
+        <li><a href="#process" class="nav-link" data-nav>Process</a></li>
+        <li><a href="#pricing" class="nav-link" data-nav>Pricing</a></li>
+        <li><a href="#faq" class="nav-link" data-nav>FAQ</a></li>
+      </ul>
+
+      <div class="flex items-center gap-3">
+        <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'd like to book a strategy call." class="btn-primary btn-sm hidden sm:inline-flex">Book a Strategy Call</a>
+        <button id="navToggle" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-ink/10 text-ink lg:hidden" aria-expanded="false" aria-controls="mobileMenu" aria-label="Toggle menu">
+          <svg id="iconBurger" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+          <svg id="iconClose" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <div id="mobileMenu" class="mx-0 mt-2 hidden origin-top rounded-md border border-ink/10 bg-panel p-5 lg:hidden">
+      <ul class="flex flex-col gap-1">
+        <li><a href="#services" class="block rounded-sm px-3 py-2.5 text-body font-medium text-ink-muted hover:bg-ink/5" data-nav>Services</a></li>
+        <li><a href="#work" class="block rounded-sm px-3 py-2.5 text-body font-medium text-ink-muted hover:bg-ink/5" data-nav>Work</a></li>
+        <li><a href="#process" class="block rounded-sm px-3 py-2.5 text-body font-medium text-ink-muted hover:bg-ink/5" data-nav>Process</a></li>
+        <li><a href="#pricing" class="block rounded-sm px-3 py-2.5 text-body font-medium text-ink-muted hover:bg-ink/5" data-nav>Pricing</a></li>
+        <li><a href="#faq" class="block rounded-sm px-3 py-2.5 text-body font-medium text-ink-muted hover:bg-ink/5" data-nav>FAQ</a></li>
+        <li class="pt-2"><a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'd like to book a strategy call." class="btn-primary w-full">Book a Strategy Call</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ================= HERO =================
+       Signature entrance: background settles → the brand mark's infinity
+       loop draws itself in → the mark resolves → headline, supporting
+       copy, and CTAs stagger up (see hero.js + the [data-hero-*] rules in
+       input.css). Cursor-tilt on the mark is desktop/fine-pointer only. -->
+  <!-- Composition follows the reference site's own hero pattern — headline
+       + CTA pair + trust row on one side, a numbered value-teaser grid on
+       the other, over a full-bleed animated field — rebuilt entirely on
+       Atifinity's red/blue system and real content: the "trust row" here
+       is three verifiable counts of what the studio actually has (not an
+       unverifiable outcome metric), and the four grid cards are exact
+       one-line quotes from the Services section below, not invented value
+       propositions. -->
+  <section id="top" data-hero class="section relative overflow-hidden pt-36 sm:pt-40 lg:pt-44">
+    <div id="hero" class="container-x grid items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+      <div>
+        <a href="#case-studies" class="trust-pill mt-6" data-hero-in="60">
+          <span class="trust-dot" aria-hidden="true"></span>
+          Verified Channel Results
+          <svg class="trust-arrow h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <h1 class="mt-6 text-hero" data-hero-in="120" data-hero-headline>
+          YouTube Growth, <span class="text-ink">Built End-to-End.</span>
+        </h1>
+        <p class="mt-7 max-w-lg text-body text-ink-muted" data-hero-in="240">
+          From the first idea to the final upload, we handle everything your channel needs to grow.
+        </p>
+
+        <p class="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted" data-hero-in="320">
+          <span class="text-ink">Research.</span>
+          <span>Strategy.</span>
+          <span>Content.</span>
+          <span>Production.</span>
+          <span>Optimization.</span>
+          <span class="text-ink">Growth.</span>
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center gap-5 sm:gap-6" data-hero-in="420">
+          <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'd like to book a strategy call." class="btn-primary group" data-magnetic>
+            Book a Strategy Call
+            <svg class="motion-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#work" class="group inline-flex items-center gap-3 text-small font-semibold text-ink">
+            <span class="flex h-11 w-11 items-center justify-center rounded-md border border-ink/15 bg-ink/5 transition-all duration-300 ease-out group-hover:-translate-y-0.5 group-hover:border-ink/40">
+              <svg class="motion-arrow-down h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            </span>
+            View Our Work
+          </a>
+        </div>
+
+        <div class="stat-row mt-12 border-t border-ink/10 pt-8" data-hero-in="500">
+          <div><span class="stat-num" data-count-to="500">0</span>+<span class="stat-label">Productions</span></div>
+          <div><span class="stat-num" data-count-to="10">0</span><span class="stat-label">Core Services</span></div>
+          <div><span class="stat-num" data-count-to="6">0</span><span class="stat-label">Step Growth System</span></div>
+        </div>
+      </div>
+
+      <div data-hero-in="180">
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+          <div class="pillar-card sheen">
+            <span class="pillar-badge">01</span>
+            <h3 class="mt-1 text-h3">Niche Strategy &amp; Market Research</h3>
+            <p class="text-small text-ink-muted">Find the right niche before you invest your time and money.</p>
+          </div>
+          <div class="pillar-card sheen">
+            <span class="pillar-badge is-accent">02</span>
+            <h3 class="mt-1 text-h3">High-Retention Scriptwriting</h3>
+            <p class="text-small text-ink-muted">Build scripts that hook viewers early and keep them watching.</p>
+          </div>
+          <div class="pillar-card sheen">
+            <span class="pillar-badge">03</span>
+            <h3 class="mt-1 text-h3">Premium Video Production</h3>
+            <p class="text-small text-ink-muted">Turn your script into a polished, engaging YouTube video.</p>
+          </div>
+          <div class="pillar-card sheen">
+            <span class="pillar-badge is-accent">04</span>
+            <h3 class="mt-1 text-h3">Analytics &amp; Growth Optimization</h3>
+            <p class="text-small text-ink-muted">Use channel data to understand what is working and what needs to change.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="#services" class="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-muted sm:flex">
+      <span>Scroll</span>
+      <span class="flex h-8 w-5 items-start justify-center rounded-full border border-ink/20 p-1">
+        <span class="h-1.5 w-1.5 animate-bounce rounded-full bg-primary"></span>
+      </span>
+    </a>
+  </section>
+
+  <!-- ================= SERVICES =================
+       10 services, exact client copy. Editorial expandable index rather
+       than ten cards — collapsed rows stay scannable; opening one reveals
+       its full bullet list. Native details/summary elements: keyboard and
+       screen-reader support come free. -->
+  <section id="services" class="section">
+    <div class="container-x">
+      <div class="max-w-2xl" data-reveal="lift">
+        <h2 class="section-title">YouTube Growth &amp; Automation Services</h2>
+        <p class="section-lede">From the first idea to the final upload, we handle everything your channel needs to grow.</p>
+      </div>
+
+      <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger" data-reveal-delay="100">
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge">01</span>
+          </span>
+          <h3 class="mt-4 text-h3">Niche Strategy &amp; Market Research</h3>
+          <p class="mt-2 text-small text-ink-muted">Find the right niche before you invest your time and money.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Profitable niche selection</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Market &amp; audience research</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Competitor analysis</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Content opportunity research</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Long-term channel potential</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge is-accent">02</span>
+          </span>
+          <h3 class="mt-4 text-h3">Content Strategy &amp; Video Ideas</h3>
+          <p class="mt-2 text-small text-ink-muted">Turn audience demand into video ideas people actually want to watch.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Trending topic research</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Evergreen content ideas</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Competitor content analysis</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>High-potential video concepts</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Content planning</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge">03</span>
+          </span>
+          <h3 class="mt-4 text-h3">High-Retention Scriptwriting</h3>
+          <p class="mt-2 text-small text-ink-muted">Build scripts that hook viewers early and keep them watching.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Strong opening hooks</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Story-driven structure</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Retention-focused writing</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Research &amp; fact-checking</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Natural calls-to-action</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Niche-specific tone</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge is-accent">04</span>
+          </span>
+          <h3 class="mt-4 text-h3">Professional Voiceover</h3>
+          <p class="mt-2 text-small text-ink-muted">Natural, professional narration that fits your audience and content.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Male &amp; female voices</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>US, UK &amp; neutral accents</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Natural delivery</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Multiple voice options</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Tone matched to your niche</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge">05</span>
+          </span>
+          <h3 class="mt-4 text-h3">Premium Video Production</h3>
+          <p class="mt-2 text-small text-ink-muted">Turn your script into a polished, engaging YouTube video.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Professional video editing</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Engaging pacing</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Visual storytelling</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Transitions &amp; effects</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Music &amp; sound design</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Retention-focused editing</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge is-accent">06</span>
+          </span>
+          <h3 class="mt-4 text-h3">Thumbnail &amp; Title Packaging</h3>
+          <p class="mt-2 text-small text-ink-muted">Package every video to earn attention before the viewer even presses play.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>High-CTR thumbnail concepts</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Strong visual hierarchy</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Curiosity-driven design</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Clean, readable layouts</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Title + thumbnail alignment</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Testing &amp; optimization</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge">07</span>
+          </span>
+          <h3 class="mt-4 text-h3">YouTube SEO &amp; Discoverability</h3>
+          <p class="mt-2 text-small text-ink-muted">Make your content easier for the right audience to discover.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Keyword research</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Search-focused titles</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Description optimization</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Metadata optimization</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Playlist structure</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Channel optimization</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge is-accent">08</span>
+          </span>
+          <h3 class="mt-4 text-h3">Analytics &amp; Growth Optimization</h3>
+          <p class="mt-2 text-small text-ink-muted">Use channel data to understand what is working and what needs to change.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>YouTube Analytics tracking</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>CTR analysis</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Audience-retention analysis</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Watch-time tracking</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Content performance review</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Competitor benchmarking</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Growth recommendations</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge">09</span>
+          </span>
+          <h3 class="mt-4 text-h3">Channel Management &amp; Brand Setup</h3>
+          <p class="mt-2 text-small text-ink-muted">Build a professional channel with a clear identity and consistent system.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Channel setup</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Logo &amp; banner</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Brand identity</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>About-section optimization</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Channel structure</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Content organization</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Publishing support</p>
+          </div>
+        </div>
+
+        <div class="service-card sheen">
+          <span class="service-card-top">
+            <span class="pillar-badge is-accent">10</span>
+          </span>
+          <h3 class="mt-4 text-h3">Channel Strategy &amp; Growth Management</h3>
+          <p class="mt-2 text-small text-ink-muted">Turn your content into a clear, repeatable system for long-term growth.</p>
+          <div class="service-body text-small text-ink-muted">
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Monthly performance review</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Content direction</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Winning-topic identification</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Underperforming-video analysis</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Strategy adjustments</p>
+            <p class="flex gap-2"><span class="text-ink-muted">—</span>Growth planning</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WORK =================
+       The strongest, most credible section on the site: 17 real, playable
+       productions. Large-format editorial rows (not a 3-up card grid),
+       alternating layout, hover-preview on desktop / viewport-triggered
+       preview on mobile, click opens the full video with sound. First 6
+       render eagerly; the rest reveal via "Load More Work" so the page
+       never has to lazy-decode 17 previews at once. -->
+  <section id="work" class="section">
+    <div class="container-x">
+      <div class="max-w-2xl" data-reveal="lift">
+        <h2 class="section-title">Content That Gets Attention. Strategy That Builds Channels.</h2>
+        <p class="section-lede">Explore our video productions, thumbnails, and channel work created to help creators build a stronger YouTube presence.</p>
+      </div>
+
+      <div class="mt-16 flex flex-col gap-20 lg:gap-28" data-work-list>
+
+        <!-- 01 — America Bridge -->
+        <article class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14 odd:lg:flex-row even:lg:flex-row-reverse" data-work-item>
+          <button type="button" data-cursor="Play" class="work-preview group relative block w-full shrink-0 overflow-hidden rounded-md border border-ink/10 bg-panel lg:w-3/5" data-video-modal="assets/portfolio/full/america-bridge.mp4" data-video-title="America Bridge">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/america-bridge.jpg" alt="America Bridge — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="eager" width="1280" height="720" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/america-bridge.mp4" poster="assets/portfolio/posters/america-bridge.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/20">
+                <span class="play-badge h-14 w-14 shadow-md">
+                  <svg class="ml-0.5 h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+              </span>
+            </span>
+          </button>
+          <div class="lg:w-2/5">
+            <h3 class="work-title text-h1">America Bridge</h3>
+            <p class="mt-3 max-w-md text-small text-ink-muted">An aerial look at the engineering and history behind an iconic bridge.</p>
+            <p class="work-cue mt-4" aria-hidden="true">Play full video <svg class="motion-arrow h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </article>
+
+        <!-- 02 — CIA -->
+        <article class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14 odd:lg:flex-row even:lg:flex-row-reverse" data-work-item>
+          <button type="button" data-cursor="Play" class="work-preview group relative block w-full shrink-0 overflow-hidden rounded-md border border-ink/10 bg-panel lg:w-3/5" data-video-modal="assets/portfolio/full/cia.mp4" data-video-title="CIA">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/cia.jpg" alt="CIA — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="1280" height="720" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/cia.mp4" poster="assets/portfolio/posters/cia.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/20">
+                <span class="play-badge h-14 w-14 shadow-md">
+                  <svg class="ml-0.5 h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+              </span>
+            </span>
+          </button>
+          <div class="lg:w-2/5">
+            <h3 class="work-title text-h1">CIA</h3>
+            <p class="mt-3 max-w-md text-small text-ink-muted">What it's really like to apply for a job at the CIA.</p>
+            <p class="work-cue mt-4" aria-hidden="true">Play full video <svg class="motion-arrow h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </article>
+
+        <!-- 03 — Debt -->
+        <article class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14 odd:lg:flex-row even:lg:flex-row-reverse" data-work-item>
+          <button type="button" data-cursor="Play" class="work-preview group relative block w-full shrink-0 overflow-hidden rounded-md border border-ink/10 bg-panel lg:w-3/5" data-video-modal="assets/portfolio/full/debt.mp4" data-video-title="Debt">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/debt.jpg" alt="Debt — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="1280" height="720" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/debt.mp4" poster="assets/portfolio/posters/debt.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/20">
+                <span class="play-badge h-14 w-14 shadow-md">
+                  <svg class="ml-0.5 h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+              </span>
+            </span>
+          </button>
+          <div class="lg:w-2/5">
+            <h3 class="work-title text-h1">Debt</h3>
+            <p class="mt-3 max-w-md text-small text-ink-muted">A clear breakdown of how national debt actually works.</p>
+            <p class="work-cue mt-4" aria-hidden="true">Play full video <svg class="motion-arrow h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </article>
+
+        <!-- 04 — Different Eye Colour Advantages -->
+        <article class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14 odd:lg:flex-row even:lg:flex-row-reverse" data-work-item>
+          <button type="button" data-cursor="Play" class="work-preview group relative block w-full shrink-0 overflow-hidden rounded-md border border-ink/10 bg-panel lg:w-3/5" data-video-modal="assets/portfolio/full/different-eye-colour-advantages.mp4" data-video-title="Different Eye Colour Advantages">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/different-eye-colour-advantages.jpg" alt="Different Eye Colour Advantages — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="1280" height="720" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/different-eye-colour-advantages.mp4" poster="assets/portfolio/posters/different-eye-colour-advantages.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/20">
+                <span class="play-badge h-14 w-14 shadow-md">
+                  <svg class="ml-0.5 h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+              </span>
+            </span>
+          </button>
+          <div class="lg:w-2/5">
+            <h3 class="work-title text-h1">Different Eye Colour Advantages</h3>
+            <p class="mt-3 max-w-md text-small text-ink-muted">The surprising science behind why eye colour matters.</p>
+            <p class="work-cue mt-4" aria-hidden="true">Play full video <svg class="motion-arrow h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </article>
+
+        <!-- 05 — Drug Cartel -->
+        <article class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14 odd:lg:flex-row even:lg:flex-row-reverse" data-work-item>
+          <button type="button" data-cursor="Play" class="work-preview group relative block w-full shrink-0 overflow-hidden rounded-md border border-ink/10 bg-panel lg:w-3/5" data-video-modal="assets/portfolio/full/drug-cartel.mp4" data-video-title="Drug Cartel">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/drug-cartel.jpg" alt="Drug Cartel — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="1280" height="720" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/drug-cartel.mp4" poster="assets/portfolio/posters/drug-cartel.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/20">
+                <span class="play-badge h-14 w-14 shadow-md">
+                  <svg class="ml-0.5 h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+              </span>
+            </span>
+          </button>
+          <div class="lg:w-2/5">
+            <h3 class="work-title text-h1">Drug Cartel</h3>
+            <p class="mt-3 max-w-md text-small text-ink-muted">Inside the rise and reach of a global drug cartel.</p>
+            <p class="work-cue mt-4" aria-hidden="true">Play full video <svg class="motion-arrow h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </article>
+
+        <!-- 06 — Eurodollars -->
+        <article class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14 odd:lg:flex-row even:lg:flex-row-reverse" data-work-item>
+          <button type="button" data-cursor="Play" class="work-preview group relative block w-full shrink-0 overflow-hidden rounded-md border border-ink/10 bg-panel lg:w-3/5" data-video-modal="assets/portfolio/full/eurodollars.mp4" data-video-title="Eurodollars">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/eurodollars.jpg" alt="Eurodollars — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="1280" height="720" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/eurodollars.mp4" poster="assets/portfolio/posters/eurodollars.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/20">
+                <span class="play-badge h-14 w-14 shadow-md">
+                  <svg class="ml-0.5 h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+              </span>
+            </span>
+          </button>
+          <div class="lg:w-2/5">
+            <h3 class="work-title text-h1">Eurodollars</h3>
+            <p class="mt-3 max-w-md text-small text-ink-muted">Unpacking the hidden financial system behind the Eurodollar.</p>
+            <p class="work-cue mt-4" aria-hidden="true">Play full video <svg class="motion-arrow h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></p>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- The remaining 11 productions: a horizontally-scrolling strip —
+           the reference site's own "flowing row of thumbnails" browsing
+           pattern, rebuilt as something you actually control (drag/swipe/
+           scroll, not an unstoppable marquee) with real playable previews
+           instead of static images. -->
+      <div class="mt-6" data-reveal="slide" data-reveal-delay="150">
+        <p class="tag !text-ink mb-4">More From Our Work</p>
+        <div class="work-strip flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2" role="region" aria-label="More portfolio videos" tabindex="0">
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/honda.mp4" data-video-title="Honda">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/honda.jpg" alt="Honda — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/honda.mp4" poster="assets/portfolio/posters/honda.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Honda</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">The story behind one of the world's most iconic automotive brands.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/mcintosh.mp4" data-video-title="McIntosh">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/mcintosh.jpg" alt="McIntosh — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/mcintosh.mp4" poster="assets/portfolio/posters/mcintosh.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">McIntosh</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">How a legendary audio brand built its high-end reputation.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/melbourne.mp4" data-video-title="Melbourne">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/melbourne.jpg" alt="Melbourne — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/melbourne.mp4" poster="assets/portfolio/posters/melbourne.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Melbourne</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">A look inside large-scale industrial manufacturing.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/mexico.mp4" data-video-title="Mexico">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/mexico.jpg" alt="Mexico — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/mexico.mp4" poster="assets/portfolio/posters/mexico.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Mexico</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">Exploring the culture, economy, and history shaping modern Mexico.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/neom.mp4" data-video-title="Neom">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/neom.jpg" alt="Neom — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/neom.mp4" poster="assets/portfolio/posters/neom.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Neom</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">Inside NEOM — Saudi Arabia's ambitious vision for the future.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/petrodollar.mp4" data-video-title="Petrodollar">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/petrodollar.jpg" alt="Petrodollar — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/petrodollar.mp4" poster="assets/portfolio/posters/petrodollar.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Petrodollar</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">How the petrodollar reshaped the global economy.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/pied-piper.mp4" data-video-title="Pied Piper">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/pied-piper.jpg" alt="Pied Piper — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/pied-piper.mp4" poster="assets/portfolio/posters/pied-piper.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Pied Piper</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">A modern retelling of the classic Pied Piper legend.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/the-promise.mp4" data-video-title="The Promise">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/the-promise.jpg" alt="The Promise — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/the-promise.mp4" poster="assets/portfolio/posters/the-promise.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">The Promise</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">A story about commitment, sacrifice, and keeping your word.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/us-navy-destroyer.mp4" data-video-title="US Navy Destroyer">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/us-navy-destroyer.jpg" alt="US Navy Destroyer — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/us-navy-destroyer.mp4" poster="assets/portfolio/posters/us-navy-destroyer.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">US Navy Destroyer</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">Inside the power and engineering of a US Navy destroyer.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/wildling.mp4" data-video-title="Wildling">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/wildling.jpg" alt="Wildling — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/wildling.mp4" poster="assets/portfolio/posters/wildling.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Wildling</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">A wild, untamed story of survival and instinct.</span>
+            </span>
+          </button>
+
+          <button type="button" data-cursor="Play" class="work-preview work-chip group relative shrink-0 snap-start overflow-hidden rounded-md border border-ink/10 bg-panel" data-video-modal="assets/portfolio/full/wizard-of-oz.mp4" data-video-title="Wizard of Oz">
+            <span class="relative block aspect-video">
+              <img src="assets/portfolio/posters/wizard-of-oz.jpg" alt="Wizard of Oz — project preview frame" class="absolute inset-0 h-full w-full object-cover" loading="lazy" width="480" height="270" />
+              <video class="absolute inset-0 h-full w-full object-cover" muted loop playsinline preload="none" data-src="assets/portfolio/previews/wizard-of-oz.mp4" poster="assets/portfolio/posters/wizard-of-oz.jpg" aria-hidden="true"></video>
+              <span class="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/15">
+                <span class="play-badge h-10 w-10"><svg class="ml-0.5 h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+              </span>
+            </span>
+            <span class="block px-3 py-2.5">
+              <span class="block text-small font-medium text-ink">Wizard of Oz</span>
+              <span class="mt-0.5 block text-[12px] text-ink-muted">A fresh look at the timeless tale of Oz.</span>
+            </span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Case studies: the client's exact framing copy, backed by real
+           YouTube Studio screenshots the client supplied (not invented
+           metrics) — every number in the highlight row and every caption
+           below is read directly off these screenshots. Shown at real
+           legible size (the reference site's own version of this section
+           shrank its proof to illegible thumbnails); revenue the client
+           blurred in their own screenshots stays blurred here too. -->
+      <div id="case-studies" class="mt-24 scroll-mt-28 border-t border-ink/10 pt-14 lg:mt-32 lg:pt-16" data-reveal="lift">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="section-title">Real Strategy. Real Execution. Measurable Growth.</h2>
+          <p class="section-lede mx-auto">See how we approach different channels, identify opportunities, improve content performance, and build systems designed for long-term growth.</p>
+        </div>
+
+        <div data-reveal="drop" class="stat-row mt-12 justify-center gap-x-12 border-t border-ink/10 pt-8 text-center sm:gap-x-16">
+          <div><span class="stat-num">433%</span><span class="stat-label">Revenue Growth, Month Over Month</span></div>
+          <div><span class="stat-num">1.0M+</span><span class="stat-label">Views In A 30-Day Window</span></div>
+          <div><span class="stat-num">$10K+</span><span class="stat-label">Estimated Revenue, Best Month</span></div>
+        </div>
+
+        <div data-reveal="slide-right" data-reveal-delay="120" class="case-strip mt-12 flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2">
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-revenue-growth-433.jpg" data-image-alt="YouTube Studio revenue dashboard showing $11,241.07 estimated revenue for the month — 433% more than the prior period" data-image-caption="$11,241.07 estimated revenue in one month — 433% more than the period before." aria-label="View full size: $11,241.07 estimated revenue in one month">
+              <img src="assets/result-and-growth/result-revenue-growth-433.jpg" alt="YouTube Studio revenue dashboard showing $11,241.07 estimated revenue for the month — 433% more than the prior period" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">$11,241.07 estimated revenue in one month — 433% more than the period before.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-channel-views-1m.jpg" data-image-alt="YouTube Studio dashboard showing 1.0M views and +3.0K subscribers over 30 days" data-image-caption="1.0M+ views and +3.0K subscribers gained in a 30-day window." aria-label="View full size: 1.0M+ views and +3.0K subscribers in a 30-day window">
+              <img src="assets/result-and-growth/result-channel-views-1m.jpg" alt="YouTube Studio dashboard showing 1.0M views and +3.0K subscribers over 30 days" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">1.0M+ views and +3.0K subscribers gained in a 30-day window.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-monthly-earnings.jpg" data-image-alt="YouTube Studio monthly earnings breakdown climbing from $101.64 in February to over $10,000 in May" data-image-caption="Monthly revenue climbing from $101 to over $10,000 in under six months." aria-label="View full size: monthly revenue climbing from $101 to over $10,000">
+              <img src="assets/result-and-growth/result-monthly-earnings.jpg" alt="YouTube Studio monthly earnings breakdown climbing from $101.64 in February to over $10,000 in May" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">Monthly revenue climbing from $101 to over $10,000 in under six months.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-channel-views-775k.jpg" data-image-alt="YouTube Studio dashboard showing 775.2K views and +2.3K subscribers over 30 days" data-image-caption="775.2K views and +2.3K subscribers — another 30-day snapshot." aria-label="View full size: 775.2K views and +2.3K subscribers in 30 days">
+              <img src="assets/result-and-growth/result-channel-views-775k.jpg" alt="YouTube Studio dashboard showing 775.2K views and +2.3K subscribers over 30 days" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">775.2K views and +2.3K subscribers — another 30-day snapshot.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-video-revenue-1.jpg" data-image-alt="YouTube Studio single-video performance showing $1,246.78 estimated revenue, 56.4K views, and a 7.6% click-through rate" data-image-caption="$1,246.78 estimated revenue from a single video — 7.6% click-through rate, 6:12 average view duration." aria-label="View full size: $1,246.78 estimated revenue from a single video">
+              <img src="assets/result-and-growth/result-video-revenue-1.jpg" alt="YouTube Studio single-video performance showing $1,246.78 estimated revenue, 56.4K views, and a 7.6% click-through rate" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">$1,246.78 estimated revenue from a single video — 7.6% click-through rate, 6:12 average view duration.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-video-revenue-2.jpg" data-image-alt="YouTube Studio single-video performance showing $411.60 estimated revenue and a $21.22 RPM" data-image-caption="$411.60 estimated revenue from a single video at a $21.22 RPM." aria-label="View full size: $411.60 estimated revenue from a single video">
+              <img src="assets/result-and-growth/result-video-revenue-2.jpg" alt="YouTube Studio single-video performance showing $411.60 estimated revenue and a $21.22 RPM" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">$411.60 estimated revenue from a single video at a $21.22 RPM.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-video-revenue-3.jpg" data-image-alt="YouTube Studio single-video performance" data-image-caption="High-performing video analytics and steady growth." aria-label="View full size: video analytics">
+              <img src="assets/result-and-growth/result-video-revenue-3.jpg" alt="YouTube Studio single-video performance" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">Consistent video views and steady engagement.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-video-revenue-4.jpg" data-image-alt="YouTube Studio single-video performance" data-image-caption="Steady growth and solid engagement across multiple videos." aria-label="View full size: video analytics">
+              <img src="assets/result-and-growth/result-video-revenue-4.jpg" alt="YouTube Studio single-video performance" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">Steady growth and solid engagement across multiple videos.</figcaption>
+          </figure>
+          <figure class="case-shot shrink-0 snap-start">
+            <button type="button" data-cursor="View" class="case-shot-trigger" data-image-modal="assets/result-and-growth/result-monthly-earnings-1.jpg" data-image-alt="YouTube Studio monthly earnings" data-image-caption="Consistent monthly revenue growth." aria-label="View full size: monthly earnings">
+              <img src="assets/result-and-growth/result-monthly-earnings-1.jpg" alt="YouTube Studio monthly earnings" class="rounded-md border border-ink/10" loading="lazy" />
+            </button>
+            <figcaption class="mt-3 max-w-[22rem] text-small text-ink-muted">Consistent monthly revenue growth over time.</figcaption>
+          </figure>
+        </div>
+
+        <div class="mt-12 text-center">
+          <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'd like to explore case studies for a channel like mine." class="btn-ghost inline-flex">
+            Explore Case Studies
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESS =================
+       Exact 6-step client copy. A single progress line fills in as the
+       section scrolls through view; each step's rule and number pick up
+       the accent color a beat after the line reaches it (process.js). -->
+  <!-- Vertical, alternating, center-line timeline — the reference site's
+       own process layout (numbered nodes down a connecting line), rebuilt
+       on our tokens with the client's exact 6-step copy. -->
+  <section id="process" class="section bg-panel/40">
+    <div class="container-x">
+      <div class="max-w-2xl" data-reveal="lift">
+        <h2 class="section-title">How We Build &amp; Grow Your Channel</h2>
+        <p class="section-lede" data-process-copy="new">A clear six-step system from strategy to consistent growth.</p>
+        <p class="section-lede hidden" data-process-copy="existing">Both. We can build a new channel from scratch or work with an existing channel. For existing channels, we review the current content and performance before creating a growth strategy.</p>
+
+        <!-- The switch swaps the intro AND the first three steps. Steps
+             01-03 in the client's document are written for a channel that
+             does not exist yet ("build your channel foundation"), which is
+             wrong for a channel that already has one. The existing-channel
+             versions are composed from the client's own service copy
+             (services 08 and 10, plus FAQ 4), not from the reference site.
+             Steps 04-06 are audience-neutral and identical on both paths. -->
+        <div class="mt-6 inline-flex rounded-md border border-ink/10 p-1" role="tablist" aria-label="View the process for">
+          <button type="button" class="process-tab is-active" data-process-tab="new" role="tab" aria-selected="true">New Channel</button>
+          <button type="button" class="process-tab" data-process-tab="existing" role="tab" aria-selected="false">Existing Channel</button>
+        </div>
+      </div>
+
+      <ol class="relative mt-16 lg:mt-20" data-reveal="rise" data-reveal-delay="100" data-process-track>
+        <div class="pointer-events-none absolute left-6 top-0 bottom-0 w-px bg-ink/10 lg:left-1/2 lg:-translate-x-1/2" aria-hidden="true"></div>
+        <div id="processLine" class="pointer-events-none absolute left-6 top-0 h-0 w-px process-line-gradient lg:left-1/2 lg:-translate-x-1/2" aria-hidden="true"></div>
+
+        <li class="process-row" data-reveal="slide">
+          <span class="process-node">01</span>
+          <div class="process-body">
+            <div data-process-copy="new">
+              <h3 class="text-h3">Find Your Opportunity</h3>
+              <p class="mt-2 text-small text-ink-muted">We research your niche, audience, competition, and market opportunities to identify the right direction for your channel.</p>
+            </div>
+            <div class="hidden" data-process-copy="existing">
+              <h3 class="text-h3">Audit What You Already Have</h3>
+              <p class="mt-2 text-small text-ink-muted">We review your current content and performance first — analytics, click-through rate, audience retention and watch time — so the strategy starts from what your channel is actually doing.</p>
+            </div>
+          </div>
+        </li>
+        <li class="process-row" data-reveal="slide-right">
+          <span class="process-node">02</span>
+          <div class="process-body">
+            <div data-process-copy="new">
+              <h3 class="text-h3">Build Your Channel Foundation</h3>
+              <p class="mt-2 text-small text-ink-muted">We set up your channel, branding, positioning, structure, and content direction so everything starts on the right foundation.</p>
+            </div>
+            <div class="hidden" data-process-copy="existing">
+              <h3 class="text-h3">Find What Is Already Working</h3>
+              <p class="mt-2 text-small text-ink-muted">We identify your winning topics and benchmark you against competitors to see which formats and subjects are earning attention, and which are quietly costing you views.</p>
+            </div>
+          </div>
+        </li>
+        <li class="process-row" data-reveal="slide">
+          <span class="process-node">03</span>
+          <div class="process-body">
+            <div data-process-copy="new">
+              <h3 class="text-h3">Plan Content People Want</h3>
+              <p class="mt-2 text-small text-ink-muted">We research topics, trends, competitors, and audience interests to create a content plan built around real opportunities.</p>
+            </div>
+            <div class="hidden" data-process-copy="existing">
+              <h3 class="text-h3">Rebuild the Content Plan</h3>
+              <p class="mt-2 text-small text-ink-muted">We analyse underperforming videos, adjust the strategy, and set a clear content direction — a plan built around the opportunities your existing audience data has already revealed.</p>
+            </div>
+          </div>
+        </li>
+        <li class="process-row" data-reveal="slide-right">
+          <span class="process-node">04</span>
+          <div class="process-body">
+            <h3 class="text-h3">Produce the Complete Video</h3>
+            <p class="mt-2 text-small text-ink-muted">Our team handles the entire production process—from research and scripting to voiceover, editing, thumbnail, and optimization.</p>
+          </div>
+        </li>
+        <li class="process-row" data-reveal="slide">
+          <span class="process-node">05</span>
+          <div class="process-body">
+            <h3 class="text-h3">Review, Refine &amp; Publish</h3>
+            <p class="mt-2 text-small text-ink-muted">Every video goes through quality control before delivery. We refine the final product based on your feedback and prepare it for publishing.</p>
+          </div>
+        </li>
+        <li class="process-row" data-reveal="slide-right">
+          <span class="process-node">06</span>
+          <div class="process-body">
+            <h3 class="text-h3">Analyze, Improve &amp; Scale</h3>
+            <p class="mt-2 text-small text-ink-muted">We study your channel data, identify what is working, find areas for improvement, and continuously refine the strategy.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= WHAT CREATORS SAY =================
+       Card anatomy follows the reference site's own testimonial card
+       (quote glyph top-right, large relaxed quote, 48px initials avatar,
+       name / niche · channel / subscriber count, wash + corner orb on
+       hover), reskinned onto Atifinity's red-blue system.
+
+       ⚠ THE QUOTES BELOW ARE DUMMY CONTENT — placeholders for layout and
+       review only. They are realistic on purpose, because placeholder
+       text that reads as placeholder cannot show whether the card design
+       survives real sentence lengths. They are NOT real client feedback.
+
+       BEFORE LAUNCH: every card carries data-placeholder. Search this
+       file for that attribute — if any remain, real quotes have not been
+       supplied yet and this section must not go live as-is. Replace the
+       quote, name, niche, channel and subscriber count with the real
+       ones, then remove that card's data-placeholder attribute. -->
+  <section id="creators" class="section">
+    <div class="container-x">
+      <div class="max-w-2xl" data-reveal="lift">
+        <p class="eyebrow">Creator Feedback</p>
+        <h2 class="section-title mt-4">What Creators Say</h2>
+        <p class="section-lede">Don't just take our word for it — here's what the creators we build for have to say.</p>
+      </div>
+
+      <div id="reviewStrip" class="review-strip mt-12" data-review-strip tabindex="0" role="group" aria-label="Creator reviews — scrollable">
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">The scripts changed everything. Retention used to fall off a cliff at thirty seconds; now it holds past the four-minute mark.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">MR</span>
+            <span>
+              <span class="quote-name block">Marcus Reed</span>
+              <span class="quote-meta block">Finance · Capital Notes</span>
+              <span class="quote-subs block">128K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">I stopped dreading upload day. Research, script, voiceover, edit, thumbnail — it all just arrives finished.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">PR</span>
+            <span>
+              <span class="quote-name block">Priya Raghunathan</span>
+              <span class="quote-meta block">History · The Long View</span>
+              <span class="quote-subs block">340K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">The thumbnails alone doubled my click-through rate. Same videos, completely different reach.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">DO</span>
+            <span>
+              <span class="quote-name block">Daniel Oyelaran</span>
+              <span class="quote-meta block">Technology · Signal &amp; Noise</span>
+              <span class="quote-subs block">92K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">They went back through my old catalogue and rewrote the titles and tags. Videos from last year started pulling views again.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">HW</span>
+            <span>
+              <span class="quote-name block">Hannah Whitlock</span>
+              <span class="quote-meta block">Science · Field Notes</span>
+              <span class="quote-subs block">215K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">I came to them with no channel at all. Six months later I&#39;m posting weekly and the numbers keep climbing.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">TL</span>
+            <span>
+              <span class="quote-name block">Tomas Lindqvist</span>
+              <span class="quote-meta block">Travel · Slow Routes</span>
+              <span class="quote-subs block">47K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">The monthly review call is the part I didn&#39;t know I needed. We actually change the strategy based on what the data says.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">AN</span>
+            <span>
+              <span class="quote-name block">Amara Nwosu</span>
+              <span class="quote-meta block">Business · Margin Call</span>
+              <span class="quote-subs block">176K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">Voiceover was the thing I was most sceptical about. It&#39;s now the thing people compliment most in my comments.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">EB</span>
+            <span>
+              <span class="quote-name block">Elliot Barnes</span>
+              <span class="quote-meta block">Documentary · Cold Record</span>
+              <span class="quote-subs block">501K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+
+        <figure class="quote-card" data-placeholder>
+          <svg class="quote-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H6a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1a6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+          <blockquote class="quote-body">Turnaround is genuinely fast without ever feeling rushed. Every cut comes back better than the brief I sent.</blockquote>
+          <figcaption class="quote-attribution">
+            <span class="quote-avatar" aria-hidden="true">SM</span>
+            <span>
+              <span class="quote-name block">Sofia Marchetti</span>
+              <span class="quote-meta block">Food · Table Salt</span>
+              <span class="quote-subs block">63K Subscribers</span>
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <p class="mt-8 text-center text-small text-ink-muted">
+        Verified channel results from this work are shown in
+        <a href="#case-studies" class="motion-link">the case studies above</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= PRICING =================
+       Exact tier names from the client document. No invented figures —
+       every tier resolves to a scoped quote, consistent with the one
+       pricing pattern used site-wide. -->
+  <section id="pricing" class="section">
+    <div class="container-x">
+      <div class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end" data-reveal="rise">
+        <div class="max-w-2xl">
+          <h2 class="section-title">YouTube Content Plans</h2>
+          <p class="section-lede">Choose the level of production that fits your channel.</p>
+        </div>
+        <div class="flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-4 py-2.5">
+          <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-primary"></span>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-ink">Limited-Time Offer — Save 10%+ on your selected plan</span>
+        </div>
+      </div>
+
+      <!-- Each tier carries the full standard-feature checklist directly
+           on its own card (the reference site's own per-card convention),
+           instead of one shared list floating below all four. -->
+      <div class="mt-14 grid gap-8 lg:grid-cols-4 lg:gap-6" data-reveal="stagger" data-reveal-child="pop" data-reveal-delay="100">
+        <div class="pricing-tier">
+          <h3 class="text-h3">Starter</h3>
+          <p class="mt-3 text-small text-ink-muted">Your first step into professional YouTube production.</p>
+          <ul class="mt-6 flex-1 space-y-2.5 text-small text-ink-muted">
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Niche &amp; Market Research</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Content Strategy</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Custom Script</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Professional Voiceover</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Premium Video Editing</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Thumbnail &amp; Title Packaging</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>YouTube SEO</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Quality Review</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Revisions Included</li>
+          </ul>
+          <div class="mt-6 border-t border-ink/10 pt-5">
+            <p class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Custom quote — scoped on a call</p>
+            <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'm interested in the Starter plan. I'd like to book a strategy call." class="btn-ghost btn-sm mt-4 w-full">Book a Strategy Call</a>
+          </div>
+        </div>
+
+        <div class="pricing-tier">
+          <h3 class="text-h3">Per Video</h3>
+          <p class="mt-3 text-small text-ink-muted">Flexible production when you need it.</p>
+          <ul class="mt-6 flex-1 space-y-2.5 text-small text-ink-muted">
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Niche &amp; Market Research</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Content Strategy</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Custom Script</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Professional Voiceover</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Premium Video Editing</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Thumbnail &amp; Title Packaging</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>YouTube SEO</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Quality Review</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Revisions Included</li>
+          </ul>
+          <div class="mt-6 border-t border-ink/10 pt-5">
+            <p class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Custom quote — scoped on a call</p>
+            <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'm interested in the Per Video plan. I'd like to book a strategy call." class="btn-ghost btn-sm mt-4 w-full">Book a Strategy Call</a>
+          </div>
+        </div>
+
+        <div class="card-featured pricing-tier">
+          <span class="badge-accent w-fit">Recommended</span>
+          <h3 class="mt-5 text-h3">Growth — 10 Videos</h3>
+          <p class="mt-3 text-small text-ink-muted">Consistent content for channels ready to grow.</p>
+          <ul class="mt-6 flex-1 space-y-2.5 text-small text-ink-muted">
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Niche &amp; Market Research</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Content Strategy</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Custom Script</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Professional Voiceover</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Premium Video Editing</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Thumbnail &amp; Title Packaging</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>YouTube SEO</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Quality Review</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span>Revisions Included</li>
+          </ul>
+          <div class="mt-6 border-t border-ink/10 pt-5">
+            <p class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Custom quote — scoped on a call</p>
+            <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'm interested in the Growth (10 Videos) plan. I'd like to book a strategy call." class="btn-primary btn-sm mt-4 w-full">Book a Strategy Call</a>
+          </div>
+        </div>
+
+        <div class="pricing-tier">
+          <h3 class="text-h3">Scale — 15 Videos</h3>
+          <p class="mt-3 text-small text-ink-muted">A complete monthly production system for serious growth.</p>
+          <ul class="mt-6 flex-1 space-y-2.5 text-small text-ink-muted">
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Niche &amp; Market Research</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Content Strategy</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Custom Script</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Professional Voiceover</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Premium Video Editing</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Thumbnail &amp; Title Packaging</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>YouTube SEO</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Quality Review</li>
+            <li class="flex items-start gap-2.5"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-muted"></span>Revisions Included</li>
+          </ul>
+          <div class="mt-6 border-t border-ink/10 pt-5">
+            <p class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Custom quote — scoped on a call</p>
+            <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'm interested in the Scale (15 Videos) plan. I'd like to book a strategy call." class="btn-ghost btn-sm mt-4 w-full">Book a Strategy Call</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ =================
+       Exact 6 Q&A pairs from the client document — nothing added. -->
+  <!-- Centered heading above a full-width stacked list — the reference
+       site's own FAQ rhythm, kept on our calmer single accordion pattern
+       (native details/summary throughout, one open state, not the
+       reference's mixed "open by default with an X to dismiss" vs
+       "chevron toggle" inconsistency). -->
+  <section id="faq" class="section bg-panel/40">
+    <div class="container-x">
+      <div class="mx-auto max-w-2xl text-center" data-reveal="rise">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="mt-5 text-small text-ink-muted">Everything You Need to Know Before Starting.</p>
+      </div>
+
+      <div class="mx-auto mt-14 max-w-3xl border-t border-ink/10" data-reveal="rise" data-reveal-delay="100">
+          <details class="faq-item">
+            <summary>How long does it take to produce a complete video?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="faq-answer">Our production timeline depends on the video requirements and package. Once the project begins, we provide a clear delivery timeline for each video.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Can I test your service before choosing a larger package?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="faq-answer">Absolutely. You can start with a single video or sample project and evaluate our production quality before moving to a larger package.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Who owns the videos after they are delivered?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="faq-answer">The ownership and usage rights are clearly defined in your agreement, so you know exactly what you receive when the project is completed.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Can you work with an existing YouTube channel, or only new channels?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="faq-answer">Both. We can build a new channel from scratch or work with an existing channel. For existing channels, we review the current content and performance before creating a growth strategy.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary>How do you choose the right topics for my channel?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="faq-answer">We combine niche research, audience interests, competitor insights, trends, and evergreen opportunities to identify topics with strong potential for your channel.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Will I be involved in the content and creative decisions?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <p class="faq-answer">Yes. We keep the process collaborative and transparent. You can share your goals, preferences, and feedback while our team handles the research, production, and optimization.</p>
+          </details>
+        </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA ================= -->
+  <section id="cta" class="section border-t border-ink/10 bg-panel/60">
+    <div class="container-x text-center" data-reveal="lift">
+      <p class="eyebrow justify-center">Ready When You Are</p>
+      <h2 class="mx-auto mt-4 max-w-3xl text-display">Ready to Grow Your <span class="text-ink">YouTube Channel?</span></h2>
+      <p class="section-lede mx-auto">Let's build your next growth system.</p>
+      <p class="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
+        <span>Strategy.</span><span>Content.</span><span>Production.</span><span>Optimization.</span><span class="text-ink">Growth.</span>
+      </p>
+      <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I'd like to book a strategy call." class="btn-primary mt-10 inline-flex" data-magnetic>
+        Book a Strategy Call
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="relative border-t border-ink/10">
+  <div class="container-x py-14">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+      <div>
+        <a href="#top" class="inline-flex text-ink" aria-label="Atifinity home">
+          <svg viewBox="0 0 172 40" width="150" height="34" class="h-7 w-auto" role="img" aria-hidden="true">
+            <path d="M20,4 L4,35 L12,35 L25,14 Z" fill="#E32227"/>
+            <path d="M27.5,16 L36,35 L28.5,35 L22,22 Z" fill="#1E3CFF"/>
+            <path d="M18,28 L25,28 L27,35 L13.5,35 Z" fill="#1E3CFF"/>
+            <text x="48" y="27" font-family="Archivo, sans-serif" font-size="19" font-weight="700" letter-spacing="0.01em" fill="currentColor">atifinity</text>
+          </svg>
+        </a>
+        <p class="mt-4 max-w-xs text-small text-ink-muted">Creative. Connected. Limitless.</p>
+        <p class="mt-6 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-muted/70">YouTube Growth &amp; Automation</p>
+      </div>
+
+      <nav aria-label="Quick links">
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">Quick Links</h3>
+        <ul class="mt-4 space-y-2.5 text-small text-ink-muted">
+          <li><a href="#services" class="hover:text-ink">Services</a></li>
+          <li><a href="#work" class="hover:text-ink">Work</a></li>
+          <li><a href="#process" class="hover:text-ink">Process</a></li>
+          <li><a href="#pricing" class="hover:text-ink">Pricing</a></li>
+          <li><a href="#faq" class="hover:text-ink">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Services">
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">Services</h3>
+        <ul class="mt-4 space-y-2.5 text-small text-ink-muted">
+          <li><a href="#services" class="hover:text-ink">Niche Strategy &amp; Research</a></li>
+          <li><a href="#services" class="hover:text-ink">Scriptwriting &amp; Voiceover</a></li>
+          <li><a href="#services" class="hover:text-ink">Video Production</a></li>
+          <li><a href="#services" class="hover:text-ink">Thumbnails &amp; SEO</a></li>
+          <li><a href="#services" class="hover:text-ink">Channel Management</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink">Let's Connect</h3>
+        <a href="mailto:hello@atifinity.studio" class="mt-4 block text-small text-ink-muted hover:text-ink">hello@atifinity.studio</a>
+        <a href="https://wa.me/923488164928" data-wa-text="Hi Atifinity, I have a question about your services." class="btn-primary btn-sm mt-4 w-fit">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm0 18a8 8 0 01-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1112 20zm4.4-6c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1s-.7.8-.9 1c-.2.2-.3.2-.6.1a6.6 6.6 0 01-1.9-1.2 7.3 7.3 0 01-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4c.1-.1.2-.3.2-.4a.5.5 0 000-.5c-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 2.9 2.9 0 00-.9 2.2c0 1.3.9 2.5 1.1 2.7.1.2 1.9 2.9 4.6 4 .6.3 1.1.4 1.5.6.6.2 1.2.1 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .2-1.1-.1-.1-.2-.2-.5-.3z"/></svg>
+          Message Us
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-ink/10 pt-6 text-small text-ink-muted sm:flex-row">
+      <p>&copy; <span id="year"></span> Atifinity. All rights reserved.</p>
+      <p class="flex items-center gap-1.5">Built with <span class="text-ink-muted">&hearts;</span> for creators.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= VIDEO PLAYER LIGHTBOX MODAL ================= -->
+<div id="videoModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 lg:p-8" role="dialog" aria-modal="true" aria-label="Video player">
+  <div id="modalBackdrop" class="modal-backdrop fixed inset-0 bg-black/30 backdrop-blur-xl transition-opacity cursor-pointer"></div>
+
+  <div class="modal-panel relative z-10 flex w-full max-w-5xl items-center justify-center group">
+    <button id="closeVideoModal" type="button" class="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white transition-colors hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary opacity-0 group-hover:opacity-100" aria-label="Close video player">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="relative aspect-video w-full overflow-hidden rounded-xl bg-black shadow-2xl">
+      <video id="modalVideo" class="h-full w-full object-contain" controls preload="auto" playsinline></video>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CASE-STUDY IMAGE LIGHTBOX MODAL =================
+     Opens a case-study screenshot at full size so the real numbers on it
+     are readable. #modalImage carries no src until image-modal.js sets
+     one on open, so the full-size files never download for a visitor who
+     doesn't open one. -->
+<div id="imageModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 lg:p-8" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <div id="imageModalBackdrop" class="modal-backdrop fixed inset-0 bg-black/30 backdrop-blur-xl transition-opacity cursor-pointer"></div>
+  
+  <div class="modal-panel relative z-10 flex max-h-full max-w-full items-center justify-center group">
+    <button id="closeImageModal" type="button" class="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white transition-colors hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary opacity-0 group-hover:opacity-100" aria-label="Close image viewer">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <img id="modalImage" class="max-h-[90vh] w-auto max-w-full rounded-md shadow-2xl object-contain" alt="" />
+  </div>
+</div>
+
+<!-- Built by `npm run build` into one file (see scripts/bundle-js.mjs). -->
+<script src="dist/js/app.js" defer></script>
+</body>
+</html>

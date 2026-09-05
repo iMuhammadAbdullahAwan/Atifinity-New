@@ -1,0 +1,1510 @@
+@import "tailwindcss";
+
+/* ---------- Fonts ----------
+   Geist / Geist Mono, self-hosted — the exact same family the reference
+   site (ytagency.pro) uses (confirmed from its own computed styles and
+   @font-face rules: Geist for body/headings, Geist Mono for labels).
+   Single variable-weight file per family (100–900) rather than one file
+   per weight. Files are shared with yt-landing-template's copy of the
+   same fonts (open source, SIL OFL) — not re-downloaded. */
+@font-face {
+  font-family: "Geist";
+  src: url("../../assets/fonts/geist-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../../assets/fonts/geist-mono-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   ATIFINITY DESIGN SYSTEM v3 — theme tokens
+   ==========================================================================
+   Single deliberate visual mode — no prefers-color-scheme switch, no
+   light/dark toggle. The palette is the same red/blue system sampled from
+   Atifinity's real logo (a red-and-blue "A" triangle mark) that the v2
+   system used, kept exactly as specified — this file only removes the
+   light-mode branch and adds the tokens/components the new editorial IA
+   needs (expandable services, large-format portfolio, a 6-step process,
+   4-tier pricing, and the layered brand-geometry background).
+
+   To retheme (new brand color, new type scale), edit the :root variables
+   and @theme block below — nothing else needs to change. */
+:root {
+  color-scheme: dark;
+
+  --color-bg: 8 9 15;          /* #08090F — base page ground */
+  --color-surface: 19 22 31;   /* #13161F — row / card surface */
+  --color-surface-elevated: 25 29 40; /* #191D28 — the ONE elevated surface */
+
+  --raw-ink: 242 243 246;      /* primary text — cool-neutral off-white */
+  --raw-ink-muted: 148 154 168; /* secondary text — cool grey */
+
+  /* Two hues, each with one job — not four rotating accents.
+       primary → Atifinity's voice (the mark's red stroke): links, icons,
+                 focus rings, quiet accents, numbering.
+       accent  → the ONE "act now" color (the mark's blue triangle):
+                 primary CTA fill, the recommended-tier flag. */
+  --raw-primary: 227 34 39;        /* #E32227 — red */
+  --raw-primary-bright: 255 60 60; /* brighter red for active states / small AA text */
+  --raw-accent: 30 60 255;         /* #1E3CFF — blue */
+  --raw-accent-deep: 20 40 200;    /* deeper blue for hover */
+  --raw-primary-text: 255 60 60;   /* text-safe red on a near-black ground (AA 4.5:1+) */
+
+  /* ---- MOTION SYSTEM ---------------------------------------------------
+     Every animated value on the site resolves to one of these. Six
+     durations, three curves, and a fixed set of travel distances — if a
+     number isn't here, it doesn't belong in a transition.
+
+     The three motion LEVELS these serve:
+       L1 micro      180-220ms  buttons, links, icons, tabs — must feel instant
+       L2 component  300-700ms  cards, images, reveals — the workhorse
+       L3 cinematic  900ms+     hero, section transitions — rare, earned
+
+     Durations kept from the shipped system (200/300/500/700/900) so
+     nothing already tuned has to be re-tuned; --motion-fast and
+     --motion-ui are the only additions, both for micro-interactions
+     that read as sluggish at 300ms. */
+  --motion-fast: 180ms;      /* icon nudges, underline growth */
+  --motion-ui: 220ms;        /* buttons, tabs, small controls */
+  --motion-standard: 300ms;  /* cards, chevrons, borders */
+  --motion-emphasis: 500ms;  /* image zoom, scrims, process nodes */
+  --motion-reveal: 700ms;    /* scroll reveals */
+  --motion-cinematic: 900ms; /* hero entrance, counters */
+
+  /* The signature curve stays primary. --ease-smooth is a slightly
+     gentler cousin for continuous/looping motion where the expo curve's
+     hard front end reads as a snap; --ease-soft is for pure fades. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  /* Travel + scale. Elevation is a ladder, not one value stamped
+     everywhere — see the depth system in section "Hover depth". */
+  --lift-micro: -2px;        /* L1 — buttons */
+  --lift-component: -4px;    /* L2 — cards, case shots */
+  --nudge-icon: 6px;         /* arrows advancing — the reference nudges 8px; 6 keeps
+                                the arrow tied to its label at our smaller icon size */
+  --nudge-title: 3px;        /* text shifting inside a hovered object */
+  --zoom-image: 1.06;        /* editorial imagery — calm */
+  --zoom-badge: 1.1;         /* small UI marks — can afford more */
+  --press-scale: 0.985;      /* the bottom of a click */
+  --tilt-icon: 3deg;         /* icon tiles cock slightly when their card is hovered */
+  --travel-lateral: 44px;    /* horizontal reveal travel — wider than vertical, because
+                                sideways entry needs distance to read as direction */
+
+  /* ---- Hover glow ------------------------------------------------------
+     The reference site's single most repeated gesture: a hovered surface
+     tints its border toward the brand hue and blooms a soft, spread-only
+     shadow in the same hue (no offset, no blur-less core — it is a halo,
+     not a drop shadow). Reproduced here in Atifinity's two hues rather
+     than the reference's one purple, so the existing semantic holds:
+
+       primary (red)  → the default surface response
+       accent (blue)  → surfaces that own a commitment (the Growth tier)
+
+     Alphas are lower than the reference's 0.3/0.6 because our ground is
+     darker (#08090F vs their near-black-with-purple-wash) and red blooms
+     harder than purple at equal alpha — matched by eye at the same
+     perceived intensity, not by copying the number. */
+  --glow-primary: 0 0 30px rgb(var(--raw-primary) / 0.22);
+  --glow-primary-lg: 0 0 50px rgb(var(--raw-primary) / 0.18);
+  --glow-accent: 0 0 30px rgb(var(--raw-accent) / 0.26);
+  --glow-accent-lg: 0 0 52px rgb(var(--raw-accent) / 0.20);
+  --motion-sweep: 1000ms;    /* a light sweep crossing a whole surface */
+}
+
+@theme {
+  /* ---- Ground / text / brand colors ---------------------------------- */
+  --color-base: rgb(var(--color-bg));
+  --color-panel: rgb(var(--color-surface));
+  --color-panel-high: rgb(var(--color-surface-elevated));
+  --color-ink: rgb(var(--raw-ink));
+  --color-ink-muted: rgb(var(--raw-ink-muted));
+  --color-primary: rgb(var(--raw-primary));
+  --color-primary-bright: rgb(var(--raw-primary-bright));
+  --color-primary-text: rgb(var(--raw-primary-text));
+  --color-accent: rgb(var(--raw-accent));
+  --color-accent-deep: rgb(var(--raw-accent-deep));
+
+  /* ---- Breakpoints ----------------------------------------------------- */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+
+  /* ---- Type ------------------------------------------------------------
+     display/h1/h2 are fluid so they never need a breakpoint stack of
+     one-off sizes in the markup. */
+  --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --text-hero: clamp(3rem, 2.1rem + 4.2vw, 6.5rem);
+  --text-hero--line-height: 0.96;
+  --text-hero--letter-spacing: -0.02em;
+  --text-display: clamp(2.75rem, 2rem + 3.2vw, 5.25rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.02em;
+  --text-h1: clamp(2.25rem, 1.8rem + 2vw, 3.25rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h2: clamp(1.75rem, 1.5rem + 1.1vw, 2.5rem);
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.55;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.14em;
+  --text-button: 0.875rem;
+  --text-button--line-height: 1;
+  --text-button--letter-spacing: 0.01em;
+
+  /* ---- Radius / shadow --------------------------------------------------
+     Neutral shadows only — no colored "glow" shadows. Elevation is used
+     on exactly one surface at a time (the featured pricing tier), never
+     as a decorative default. */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 24px 48px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-base text-ink font-sans antialiased;
+    font-weight: 400;
+    /* Reveals that travel in from the right park their element a few
+       dozen pixels past the viewport's right edge for the length of the
+       animation. Without this, that briefly grows the document and the
+       browser flashes a horizontal scrollbar — a jitter on every such
+       reveal. `clip` rather than `hidden` deliberately: `hidden` would
+       make body a scroll container and silently kill position: sticky
+       for everything inside it. */
+    overflow-x: clip;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-ink;
+  }
+
+  h1, h2, h3 {
+    @apply font-display font-bold text-ink;
+    text-wrap: balance;
+  }
+
+  a {
+    transition: color var(--motion-fast) var(--ease-soft);
+  }
+
+  /* Respect reduced-motion preference across the whole site */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---- Buttons ------------------------------------------------------
+   One button language, three roles. Modest radius (not a pill) reads as a
+   designed agency CTA rather than a generic SaaS button; no glow shadow —
+   hover is a color shift plus a small lift, nothing louder. */
+@utility btn {
+  @apply relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-button font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  padding: 0.9rem 1.6rem;
+  overflow: hidden;
+  transition: transform var(--motion-ui) var(--ease-out-expo),
+              background-color var(--motion-ui) var(--ease-soft),
+              border-color var(--motion-ui) var(--ease-soft),
+              box-shadow var(--motion-ui) var(--ease-soft);
+
+  /* The press: every button goes slightly *under* its resting position,
+     so a click has a physical bottom rather than just releasing hover. */
+  &:active { transform: translateY(0) scale(var(--press-scale)); }
+}
+
+/* ==========================================================================
+   COMPONENTS
+   ========================================================================== */
+@layer components {
+  /* ---- Section scaffolding -------------------------------------------- */
+  .container-x {
+    @apply relative mx-auto w-full px-6 sm:px-8 lg:px-10;
+    max-width: 1280px;
+  }
+
+  .section {
+    @apply relative;
+    padding-top: clamp(4rem, 3.2rem + 3.5vw, 7rem);
+    padding-bottom: clamp(4rem, 3.2rem + 3.5vw, 7rem);
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-mono text-label uppercase text-ink-muted;
+  }
+
+  .section-title {
+    @apply text-h2;
+  }
+
+  .section-lede {
+    @apply mt-4 max-w-lg text-small text-ink-muted;
+  }
+
+  /* ---- Surfaces ---------------------------------------------------------
+     Three levels only:
+       .surface-row      flat editorial row — a hairline divider, no box
+       .card             standard bordered surface
+       .card-featured    the ONE elevated surface on the page (Growth tier)
+
+     Both boxed surfaces are translucent + backdrop-blur — the reference
+     site's own glass-card treatment, showing the particle field
+     (#brandField) through in Atifinity's own red/blue instead of the
+     reference's purple/pink. The ink/panel contrast ratio was rechecked
+     at the lowest alpha used here and still clears AA for small text, so
+     translucency never costs legibility.
+
+     The fill alpha is deliberately low and the blur deliberately light
+     (sm, not md): a heavier frost smears the drifting brand marks behind
+     a card into an unreadable colored smudge, which defeats the point of
+     letting the field show through at all. Every surface on the page
+     uses this same pair of values so the whole site reads as one sheet
+     of glass over one field, not as panes of differing thickness. */
+  .surface-row { @apply border-t border-ink/10; }
+  .surface-row:last-child { @apply border-b; }
+
+  .card {
+    @apply rounded-md border border-ink/10 bg-panel/20 backdrop-blur-sm;
+  }
+
+  .card-featured {
+    @apply relative rounded-lg border border-accent/40 bg-panel-high/35 shadow-md backdrop-blur-sm;
+  }
+
+  /* ---- Hover glow -------------------------------------------------------
+     One class, added alongside a surface, that supplies the reference
+     site's signature hover: border toward the brand hue + a same-hue halo.
+     It exists as a modifier rather than being baked into .card because
+     not every surface should bloom — a card the reader is comparing
+     prices inside should stay quiet, and only surfaces that are actually
+     clickable earn the response.
+
+     220ms, not our 300ms component default: the reference runs this at
+     200ms and it is right — a halo that takes a third of a second to
+     arrive feels like the page lagging behind the pointer rather than
+     answering it. Larger travel elsewhere keeps 300ms; only the surface's
+     own colour response is this fast. */
+  .glow-edge {
+    transition: border-color var(--motion-ui) var(--ease-soft),
+                background-color var(--motion-ui) var(--ease-soft),
+                box-shadow var(--motion-ui) var(--ease-soft),
+                transform var(--motion-standard) var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .glow-edge:hover {
+      @apply border-primary/45;
+      box-shadow: var(--glow-primary);
+    }
+    .glow-edge.glow-lg:hover { box-shadow: var(--glow-primary-lg); }
+    .glow-edge.glow-accent:hover {
+      @apply border-accent/55;
+      box-shadow: var(--glow-accent);
+    }
+    .glow-edge.glow-accent.glow-lg:hover { box-shadow: var(--glow-accent-lg); }
+  }
+  /* Keyboard reaches the same state — the glow is the only visual cue
+     that a surface is interactive, so it cannot be mouse-only. */
+  .glow-edge:focus-visible,
+  .glow-edge:focus-within {
+    @apply border-primary/45;
+    box-shadow: var(--glow-primary);
+  }
+  .glow-edge.glow-accent:focus-visible,
+  .glow-edge.glow-accent:focus-within {
+    @apply border-accent/55;
+    box-shadow: var(--glow-accent);
+  }
+  /* Touch has no hover to answer, so the same response fires on press. */
+  @media (hover: none) {
+    .glow-edge:active { @apply border-primary/45; }
+    .glow-edge.glow-accent:active { @apply border-accent/55; }
+  }
+
+  /* ---- Sheen ------------------------------------------------------------
+     A band of light that crosses a surface once, on hover. The reference
+     site builds this out of two nested divs in the markup on every card
+     that uses it; here it is one class and a pseudo-element, so the
+     effect is a single edit and the markup stays about content.
+
+     The slow duration is the whole point. At 300ms it reads as a flash;
+     at ~1s it reads as light moving across a physical surface, which is
+     what makes a flat glass card feel like a material. It runs only on
+     the way IN — leaving the card cuts the band instantly rather than
+     dragging it back, because a sweep that reverses reads as an error.
+
+     Requires the host to be `position: relative; overflow: hidden`. */
+  .sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent 38%,
+      rgb(var(--raw-primary) / 0.16) 50%,
+      transparent 62%
+    );
+    transform: translateX(-110%);
+    opacity: 0;
+    transition: transform 0s, opacity var(--motion-fast) var(--ease-soft);
+  }
+  .sheen.sheen-accent::after {
+    background: linear-gradient(
+      100deg,
+      transparent 38%,
+      rgb(var(--raw-accent) / 0.20) 50%,
+      transparent 62%
+    );
+  }
+  @media (hover: hover) {
+    .sheen:hover::after {
+      transform: translateX(110%);
+      opacity: 1;
+      transition: transform var(--motion-sweep) var(--ease-smooth),
+                  opacity var(--motion-fast) var(--ease-soft);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sheen::after { display: none; }
+  }
+
+  /* ---- Header --------------------------------------------------------
+     Starts fully transparent over the hero (Phase 6/23: "sticky
+     transparent navigation, transformation after scrolling"); once the
+     page scrolls past the hero, nav.js adds .is-scrolled and the header
+     solidifies so it never sits illegibly over foreground content. */
+  /* The bar arrives from off the top of the screen rather than being
+     there from frame one — the reference site's own opening move. It is
+     worth the 700ms because it tells the visitor, before they have read
+     anything, that this navigation is a fixed object that travels with
+     them, not part of the hero it is currently sitting on.
+
+     Done in CSS with fill-mode `both` rather than from JS: the bar is the
+     first thing painted, and gating it on a script means a visible gap
+     before it exists. It also means a broken or disabled script leaves
+     the header exactly where it belongs. */
+  #siteHeader {
+    animation: header-drop var(--motion-reveal) var(--ease-out-expo) 120ms both;
+    transition: background-color var(--motion-standard) var(--ease-soft),
+                border-color var(--motion-standard) var(--ease-soft),
+                box-shadow var(--motion-standard) var(--ease-soft),
+                backdrop-filter var(--motion-standard) var(--ease-soft);
+  }
+  @keyframes header-drop {
+    from { opacity: 0; transform: translateY(-100%); }
+    to   { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #siteHeader { animation: none; }
+  }
+  #siteHeader.is-scrolled {
+    @apply border-ink/10 bg-base/85 shadow-sm backdrop-blur-md;
+  }
+  /* "Condensing" the header without animating its height. Scaling the
+     mark down slightly reads as the bar tightening, but runs entirely on
+     the compositor — animating padding or height here would relayout the
+     whole page on every scroll frame, which is exactly the cost this
+     system spends everywhere else avoiding. */
+  #siteHeader .header-mark {
+    transform-origin: left center;
+    transition: transform var(--motion-emphasis) var(--ease-out-expo);
+  }
+  #siteHeader.is-scrolled .header-mark { transform: scale(0.92); }
+
+  /* ---- Buttons: the two solid roles carry the sweep ---------------------
+     A single band of light crosses the surface once on hover, then stops.
+     It is not a looping shine — a permanent animation on a CTA reads as a
+     banner ad. The band is masked by the button's own overflow, so it
+     genuinely looks like light travelling over a material rather than an
+     element sliding past. Sweep is desktop-hover only; on touch the lift
+     and colour change carry the whole interaction. */
+  /* Applied to the two solid roles directly: Tailwind v4 can't @apply a
+     custom component class into another, so the sweep is attached by
+     selector rather than composed as a utility. */
+  .btn-primary::before,
+  .btn-red::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 45%;
+    pointer-events: none;
+    transform: translateX(-160%) skewX(-18deg);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  }
+  @media (hover: hover) {
+    .btn-primary:hover::before,
+    .btn-red:hover::before {
+      transform: translateX(320%) skewX(-18deg);
+      transition: transform 620ms var(--ease-smooth);
+    }
+  }
+
+  .btn-primary {
+    @apply btn bg-accent text-white;
+  }
+  .btn-red {
+    @apply btn bg-primary text-white;
+  }
+  .btn-ghost {
+    @apply btn border border-ink/15 bg-transparent text-ink;
+  }
+  @media (hover: hover) {
+    .btn-primary:hover { @apply bg-accent-deep; transform: translateY(var(--lift-micro)); }
+    .btn-red:hover { @apply bg-primary-bright; transform: translateY(var(--lift-micro)); }
+    .btn-ghost:hover { @apply border-ink/35 bg-ink/5; }
+  }
+
+  .btn-sm { padding: 0.65rem 1.25rem; font-size: 0.8125rem; }
+
+  /* Arrows and chevrons inside any hovered control advance by one
+     token'd nudge — the same distance everywhere, so "forward" always
+     looks like the same amount of forward. */
+  .btn svg,
+  .motion-arrow {
+    transition: transform var(--motion-fast) var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .btn:hover .motion-arrow,
+    .group:hover .motion-arrow { transform: translateX(var(--nudge-icon)); }
+    .motion-arrow-down { transition: transform var(--motion-fast) var(--ease-out-expo); }
+    .group:hover .motion-arrow-down { transform: translateY(var(--nudge-icon)); }
+  }
+
+  /* ---- Links: underline grows from the leading edge -------------------- */
+  .motion-link {
+    @apply relative text-ink no-underline;
+    transition: color var(--motion-fast) var(--ease-soft);
+  }
+  .motion-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--motion-ui) var(--ease-out-expo);
+  }
+  .motion-link:hover::after,
+  .motion-link:focus-visible::after { transform: scaleX(1); }
+
+  /* ---- Nav ---------------------------------------------------------------
+     One underline element does both jobs: it grows from the left on
+     hover, and stays put when the section is active. Because it is the
+     same element scaling rather than two states swapping, the scrollspy
+     handoff between sections interpolates instead of popping. */
+  .nav-link {
+    @apply relative text-small font-medium text-ink-muted;
+    transition: color var(--motion-fast) var(--ease-soft);
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--motion-ui) var(--ease-out-expo),
+                background-color var(--motion-ui) var(--ease-soft);
+  }
+  .nav-link:hover { @apply text-ink; }
+  /* Hover shows intent, so it uses red; the active section is a state,
+     so it stays blue — the same distinction the rest of the site makes. */
+  .nav-link:hover::after { transform: scaleX(1); background: var(--color-primary); }
+  .nav-link:focus-visible::after { transform: scaleX(1); }
+  .nav-link.is-active { @apply text-ink; }
+  .nav-link.is-active::after { transform: scaleX(1); background: var(--color-accent); }
+
+  .tag {
+    @apply font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted;
+  }
+
+  .badge-accent {
+    @apply inline-flex items-center gap-1.5 rounded-sm bg-accent px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-white;
+  }
+
+  /* ---- FAQ / Services (shared accordion language) ------------------------
+     Native <details>/<summary> — free keyboard support, free
+     screen-reader semantics, zero extra JS for the open/close state itself.
+     Editorial list, not a stack of cards. */
+  .faq-item, .service-row {
+    @apply border-t border-ink/10;
+  }
+  .faq-item summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-4 py-6 text-h3 font-display font-bold text-ink marker:content-none;
+    transition: color var(--motion-fast) var(--ease-soft);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item .faq-chevron {
+    @apply h-4 w-4 shrink-0 text-ink-muted;
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                color var(--motion-fast) var(--ease-soft);
+  }
+  
+  @media (hover: hover) {
+    .faq-item:nth-child(odd) summary:hover .faq-chevron,
+    .faq-item:nth-child(odd) summary:hover { color: var(--color-primary-text); }
+    
+    .faq-item:nth-child(even) summary:hover .faq-chevron,
+    .faq-item:nth-child(even) summary:hover { color: var(--color-accent); }
+  }
+  
+  .faq-item:nth-child(odd)[open] summary .faq-chevron,
+  .faq-item:nth-child(odd)[open] summary { color: var(--color-primary-text); }
+  
+  .faq-item:nth-child(even)[open] summary .faq-chevron,
+  .faq-item:nth-child(even)[open] summary { color: var(--color-accent); }
+  
+  .faq-item[open] summary .faq-chevron { @apply rotate-180; }
+  .faq-item .faq-answer { @apply max-w-2xl pb-6 text-body text-ink-muted; }
+
+  /* Services card: same visual language as the hero's pillar cards
+     (numbered badge, bordered panel) rather than a full-width row.
+     Static — everything (badge, title, tagline, full bullet list) is
+     always visible, no expand/collapse. */
+  /* Depth level 1 of the ladder: border + tone only, no lift. Ten of
+     these are on screen at once, and ten lifting cards is noise — the
+     hovered card gains just enough weight to separate from its
+     neighbours. The accent bar on the leading edge is what actually
+     marks it, growing from the top rather than fading in. */
+  .service-card {
+    @apply relative flex flex-col overflow-hidden rounded-md border border-ink/10 bg-panel/20 p-6 backdrop-blur-sm;
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                border-color var(--motion-ui) var(--ease-soft),
+                background-color var(--motion-ui) var(--ease-soft),
+                box-shadow var(--motion-ui) var(--ease-soft);
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-primary);
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform var(--motion-standard) var(--ease-out-expo);
+  }
+  .service-card:nth-child(even)::before {
+    background: var(--color-accent);
+  }
+  /* Ten of these sit on screen at once, so the halo here is deliberately
+     the *small* one and there is still no lift - the accent bar stays the
+     thing that marks the card, and the glow only separates it from its
+     neighbours. Ten cards each blooming at full strength would turn the
+     grid into a light show. */
+  @media (hover: hover) {
+    .service-card:nth-child(odd):hover {
+      @apply border-primary/40 bg-panel/28;
+      box-shadow: var(--glow-primary);
+      transform: scale(1.02);
+    }
+    .service-card:nth-child(even):hover {
+      @apply border-accent/40 bg-panel/28;
+      box-shadow: var(--glow-accent);
+      transform: scale(1.02);
+    }
+    .service-card:hover::before { transform: scaleY(1); }
+  }
+  .service-card:nth-child(odd):focus-within {
+    @apply border-primary/40;
+    box-shadow: var(--glow-primary);
+  }
+  .service-card:nth-child(even):focus-within {
+    @apply border-accent/40;
+    box-shadow: var(--glow-accent);
+  }
+  .service-card:focus-within::before { transform: scaleY(1); }
+  .service-card .service-card-top {
+    @apply flex items-start justify-between gap-3;
+  }
+  .service-card .service-body {
+    @apply mt-4 grid gap-2 border-t border-ink/10 pt-4;
+  }
+
+
+  /* ---- Trust pill ---------------------------------------------------------
+     The reference site opens with "Trusted by 100+ YouTubers". Atifinity has
+     supplied no client count, and inventing one would put an unverifiable
+     business claim on a live commercial page — so this does the same job the
+     other way round: instead of asserting a number, it points at the proof
+     that is actually on this page and lets the visitor go read it. A claim you
+     can click through to beats a bigger claim you cannot check. */
+  .trust-pill {
+    @apply inline-flex items-center gap-2.5 rounded-full border border-ink/12 bg-panel/30 py-1.5 pl-3 pr-4 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted backdrop-blur-sm;
+    transition: border-color var(--motion-standard) var(--ease-soft),
+                background-color var(--motion-standard) var(--ease-soft),
+                color var(--motion-standard) var(--ease-soft);
+  }
+  /* The dot emits one slow expanding ring — the reference site's live
+     indicator, taken down from its 1s insistent pulse to a 3.4s breath.
+     At 1s a marketing page's badge nags; at 3.4s the eye catches it once,
+     registers the pill as something active, and lets it go. The ring is
+     a pseudo-element on an aria-hidden dot, so it adds nothing to the
+     accessibility tree and the sentence beside it carries all meaning. */
+  .trust-pill .trust-dot {
+    @apply relative h-1.5 w-1.5 shrink-0 rounded-full bg-primary;
+  }
+  .trust-pill .trust-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    animation: dot-ping 3400ms cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  @keyframes dot-ping {
+    0%   { opacity: 0.55; transform: scale(1); }
+    55%, 100% { opacity: 0; transform: scale(2.6); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .trust-pill .trust-dot::after { animation: none; opacity: 0; }
+  }
+  @media (hover: hover) {
+    .trust-pill:hover { @apply border-primary/40 bg-panel/45 text-ink; }
+    .trust-pill:hover .trust-arrow { transform: translateX(var(--nudge-icon)); }
+  }
+  .trust-pill .trust-arrow {
+    transition: transform var(--motion-fast) var(--ease-out-expo);
+  }
+
+  /* ---- Creator quotes -----------------------------------------------------
+     Rebuilt to the reference card's own anatomy, reskinned:
+
+       reference                        here
+       ---------------------------      ------------------------------
+       rounded-3xl, p-8, glass          same shape, our radius + glass
+       quote glyph top-right, 20%       same, in brand red
+       large quote text, relaxed        same
+       48px avatar, purple→pink         48px avatar, our red→blue
+       name, role • channel             same
+       subscriber count in accent       same, in brand red
+       purple wash + orb on hover       same, in brand red
+       purple glow shadow on hover      neutral shadow + the orb
+
+     The one deliberate departure is the glow. The reference drops a
+     coloured 50px glow behind the card; this system has held a
+     "neutral shadows only" rule from the start, and a red halo on a red
+     border reads as a warning state rather than as depth. The blurred
+     corner orb carries the same sense of the card lighting up, without
+     turning the border into an alert.
+
+     Shown three-up rather than one-at-a-time: social proof works by
+     accumulation, and a carousel hides most of its evidence behind a
+     control most visitors never touch. */
+  .quote-card {
+    @apply relative flex flex-col overflow-hidden rounded-lg border border-ink/10 bg-panel/20 p-8 backdrop-blur-sm;
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                border-color var(--motion-standard) var(--ease-soft),
+                background-color var(--motion-standard) var(--ease-soft),
+                box-shadow var(--motion-standard) var(--ease-soft);
+  }
+  /* Gradient wash — the reference's from-transparent/to-accent overlay. */
+  .quote-card::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 opacity-0;
+    background: linear-gradient(135deg, rgba(227,34,39,0) 0%, rgba(227,34,39,0.10) 100%);
+    transition: opacity var(--motion-standard) var(--ease-soft);
+  }
+  /* The corner orb, clipped by the card's own overflow. */
+  .quote-card::after {
+    content: '';
+    @apply pointer-events-none absolute opacity-0;
+    top: -5rem;
+    right: -5rem;
+    height: 16rem;
+    width: 16rem;
+    border-radius: 9999px;
+    background: rgba(227, 34, 39, 0.18);
+    filter: blur(56px);
+    transition: opacity var(--motion-standard) var(--ease-soft);
+  }
+  @media (hover: hover) {
+    .quote-card:hover {
+      @apply border-primary/50 bg-panel/30;
+      transform: translateY(var(--lift-component)) scale(1.02);
+      /* Same weight-plus-identity pair as the hero pillars: a neutral
+         drop shadow for the lift, a brand halo for which card you're on. */
+      box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.55), var(--glow-primary);
+    }
+    .quote-card:hover::before,
+    .quote-card:hover::after { opacity: 1; }
+  }
+
+  /* Quote icon, matching the reference's placement and weight. */
+  .quote-mark {
+    @apply pointer-events-none absolute right-6 top-6 h-16 w-16 text-primary/20;
+  }
+  .quote-body {
+    @apply relative z-10 flex-1 text-ink/90;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  @media (min-width: 768px) {
+    .quote-body { font-size: 1.125rem; }
+  }
+  .quote-attribution {
+    @apply relative z-10 mt-7 flex items-center gap-4;
+  }
+  /* The mark's own two hues, in the mark's own order — the closest thing
+     to a brand-owned equivalent of the reference's purple→pink avatar. */
+  .quote-avatar {
+    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-[17px] font-bold text-white;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  }
+  .quote-name {
+    @apply text-[17px] font-semibold leading-tight text-ink;
+  }
+  .quote-meta {
+    @apply mt-0.5 text-small text-ink-muted;
+  }
+  .quote-subs {
+    @apply mt-0.5 text-small font-semibold text-primary-text;
+  }
+
+
+  /* ---- Review strip -------------------------------------------------------
+     A horizontal, snap-aligned rail rather than a grid, so the section can
+     hold more quotes than fit across the viewport.
+
+     Deliberately NOT auto-scrolling, unlike the portfolio and case-study
+     rails. Those show images that read at a glance; these are sentences
+     that have to be read, and text that slides away mid-sentence is the
+     single most annoying thing a testimonial carousel does. The reader
+     advances it, not a timer. */
+  .review-strip {
+    @apply flex snap-x snap-mandatory items-stretch gap-6 overflow-x-auto scrollbar-none;
+    scroll-behavior: smooth;
+    /* Room for the cards' hover lift and shadow, which would otherwise be
+       clipped by the scroll container's own bounds. */
+    padding-block: 0.5rem 1.5rem;
+    scroll-padding-left: 1px;
+  }
+  .review-strip > * {
+    @apply w-[85vw] shrink-0 snap-start sm:w-[400px];
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .review-strip { scroll-behavior: auto; }
+  }
+
+  /* Rail controls. Disabled rather than hidden at the ends — a control
+     that vanishes makes the reader wonder whether they broke something,
+     while one that dims explains itself. */
+  .strip-nav {
+    @apply inline-flex h-16 w-16 items-center justify-center rounded-full border border-ink/15 bg-panel/30 text-ink backdrop-blur-sm;
+    transition: transform var(--motion-ui) var(--ease-out-expo),
+                border-color var(--motion-ui) var(--ease-soft),
+                background-color var(--motion-ui) var(--ease-soft),
+                color var(--motion-ui) var(--ease-soft),
+                opacity var(--motion-ui) var(--ease-soft);
+  }
+  @media (hover: hover) {
+    .strip-nav[data-review-prev]:hover:not([disabled]) {
+      @apply border-primary bg-primary text-white;
+      transform: translateY(var(--lift-micro));
+    }
+    .strip-nav[data-review-next]:hover:not([disabled]) {
+      @apply border-accent bg-accent text-white;
+      transform: translateY(var(--lift-micro));
+    }
+  }
+  .strip-nav:active:not([disabled]) { transform: translateY(0) scale(var(--press-scale)); }
+  .strip-nav[disabled] { @apply cursor-not-allowed opacity-35; }
+  .strip-nav:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-primary;
+  }
+
+
+  /* Rail dots. Follows the reference's own indicator: inactive dots are
+     small circles, and the active one stretches into a short pill rather
+     than just changing colour. That width change is what makes position
+     readable at a glance — colour alone on an 8px dot is close to
+     invisible, especially against a dark ground.
+
+     The pill takes the mark's two hues in the mark's own order, which is
+     the brand-owned equivalent of the reference's purple-to-pink. */
+
+
+  /* ---- Process timeline ---------------------------------------------
+     Vertical, alternating, center-line timeline — the reference site's
+     own process layout, rebuilt on our tokens: a step's node sits ON the
+     center line (positioned to its parent row's near edge so it lands at
+     the 50% mark regardless of which half the row occupies), fed by
+     .process-row's lg:odd/even placement below. */
+  .process-row {
+    @apply relative pb-14 last:pb-0 lg:w-1/2 lg:pb-20;
+  }
+  .process-row:nth-child(odd) {
+    @apply lg:pr-14;
+  }
+  .process-row:nth-child(even) {
+    @apply lg:ml-auto lg:pl-14 lg:text-left;
+  }
+  .process-node {
+    @apply absolute left-0 top-0 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-ink/15 bg-base font-mono text-small font-semibold text-ink-muted lg:left-auto;
+    transition: border-color var(--motion-emphasis) var(--ease-soft),
+                background-color var(--motion-emphasis) var(--ease-soft),
+                color var(--motion-emphasis) var(--ease-soft);
+  }
+  .process-row:nth-child(odd) .process-node {
+    @apply lg:-right-6;
+  }
+  .process-row:nth-child(even) .process-node {
+    @apply lg:-left-6;
+  }
+  .process-row:nth-child(odd).is-active .process-node {
+    @apply border-primary bg-primary text-white;
+  }
+  .process-row:nth-child(even).is-active .process-node {
+    @apply border-accent bg-accent text-white;
+  }
+  .process-line-gradient {
+    background: linear-gradient(
+      to bottom,
+      var(--color-primary) 0%,
+      var(--color-primary) 10%,
+      var(--color-accent) 25%,
+      var(--color-accent) 40%,
+      var(--color-primary) 55%,
+      var(--color-primary) 70%,
+      var(--color-accent) 85%,
+      var(--color-accent) 100%
+    );
+  }
+  /* Confirmation ring. The line reaching a node is progress; this single
+     expanding ring is the acknowledgement that the step has been
+     *reached*. It fires once on activation and settles - a looping pulse
+     would turn a moment of confirmation into ambient decoration, and six
+     of them looping at once would be a distraction. */
+  .process-node::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .process-row:nth-child(odd).is-active .process-node::after {
+    border-color: var(--color-primary);
+    animation: node-confirm var(--motion-reveal) var(--ease-out-expo) forwards;
+  }
+  .process-row:nth-child(even).is-active .process-node::after {
+    border-color: var(--color-accent);
+    animation: node-confirm var(--motion-reveal) var(--ease-out-expo) forwards;
+  }
+  @keyframes node-confirm {
+    from { opacity: 0.6; transform: scale(1); }
+    to   { opacity: 0;   transform: scale(1.75); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .process-row.is-active .process-node::after { animation: none; }
+  }
+  .process-row .process-body {
+    @apply pl-16 lg:pl-0;
+  }
+
+  /* New-channel / existing-channel switch — reference-style pill toggle */
+  .process-tab {
+    @apply rounded-sm px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-ink-muted;
+    transition: background-color var(--motion-ui) var(--ease-soft),
+                color var(--motion-ui) var(--ease-soft);
+  }
+  /* Switching tabs eases the incoming sentence in rather than swapping
+     text instantly. The outgoing one is hidden immediately instead of
+     cross-dissolving: the two copies differ a lot in length, so
+     overlapping them would shove the timeline below up and down. */
+  [data-process-copy] {
+    transition: opacity var(--motion-standard) var(--ease-soft),
+                transform var(--motion-standard) var(--ease-out-expo);
+  }
+  [data-process-copy].is-entering { opacity: 0; transform: translateX(-8px); }
+  .process-tab.is-active {
+    @apply bg-accent text-white;
+  }
+
+  /* ---- Pricing ---------------------------------------------------------
+     All four tiers share one card shape (border, glass bg, radius,
+     padding) — the same language as .card-featured above. Consistent
+     shape everywhere; the "Recommended" tier is distinguished by color +
+     badge + button variant, not by being the only one that looks like a
+     card.
+
+     The Recommended tier carries both "card-featured pricing-tier" in its
+     class list. Both are single-class selectors, so without help the
+     later one in this file — .pricing-tier — would win any property they
+     both set (border-color, background) on a cascade-order tie,
+     silently erasing .card-featured's accent look. The compound selector
+     below outranks either alone and restores it explicitly, rather than
+     relying on keeping these two rules in a fragile order. */
+  /* Pricing sits at the BOTTOM of the intensity map on purpose. This is
+     where people compare carefully, so the tiers get border and tone
+     only — no lift, no scale. Motion here would cost more in reading
+     comfort than it could ever return in polish. */
+  .pricing-tier {
+    @apply relative flex h-full flex-col rounded-lg border border-ink/10 bg-panel/20 p-7 backdrop-blur-sm;
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                border-color var(--motion-ui) var(--ease-soft),
+                background-color var(--motion-ui) var(--ease-soft),
+                box-shadow var(--motion-ui) var(--ease-soft);
+  }
+  .pricing-tier.card-featured {
+    @apply border-accent/40 bg-panel-high/35 shadow-md;
+  }
+  @media (hover: hover) {
+    /* Pricing takes the reference's *widest* halo (50px, not 30).
+       The Recommended tier glows blue because blue is this site's commit
+       colour everywhere else. */
+    .pricing-tier:hover {
+      @apply border-primary/35 bg-panel/30;
+      box-shadow: var(--glow-primary-lg);
+      transform: scale(1.02);
+    }
+    .pricing-tier.card-featured:hover {
+      @apply border-accent/60 bg-panel-high/45;
+      box-shadow: var(--glow-accent-lg);
+      transform: scale(1.02);
+    }
+  }
+
+  /* ---- Hero stat row -----------------------------------------------------
+     Reference-style "trust bar" (bold number + label, repeated 3×), but
+     every number here is a real, verifiable count of what the studio
+     actually has (productions / services / process steps) rather than an
+     unverifiable outcome metric. */
+  .stat-row {
+    @apply flex flex-wrap items-baseline gap-x-8 gap-y-3;
+  }
+  .stat-num {
+    @apply font-display text-h1 font-bold text-ink;
+  }
+  .stat-label {
+    @apply block font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted;
+  }
+
+  /* ---- Hero value-pillar cards --------------------------------------------
+     A numbered 2×2 teaser grid — the reference site's own hero pattern
+     (four small glass value cards beside the headline, the animated field
+     showing through), filled with real, exact-copy one-liners pulled from
+     the Services section rather than invented value propositions.
+
+     Hover: the reference's own glass cards carry a 300ms transition and a
+     resting drop-shadow; this is the same idea taken further — border,
+     background, and a gentle lift + neutral (not colored-glow) shadow all
+     move together on one settle curve, so hovering a card feels like it's
+     physically responding rather than just recoloring. */
+  /* Depth level 2: the full component response — border, tone, lift and
+     a resting-to-raised shadow all on one curve, so the card reads as
+     physically rising rather than as four properties changing at once. */
+  /* overflow-hidden is here for .sheen: the sweep band is a card-sized
+     pseudo-element that travels a full width past its own edges, so
+     without clipping it would paint across the neighbouring card and
+     square off this card's rounded corners on the way through. */
+  .pillar-card {
+    @apply relative flex flex-col gap-4 overflow-hidden rounded-lg border border-ink/10 bg-panel/20 p-6 backdrop-blur-sm sm:p-7;
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                border-color var(--motion-standard) var(--ease-soft),
+                background-color var(--motion-standard) var(--ease-soft),
+                box-shadow var(--motion-standard) var(--ease-soft);
+  }
+  @media (hover: hover) {
+    .pillar-card:nth-child(odd):hover {
+      @apply border-primary/40 bg-panel/32;
+      transform: translateY(var(--lift-component));
+      box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.55), var(--glow-primary);
+    }
+    .pillar-card:nth-child(even):hover {
+      @apply border-accent/40 bg-panel/32;
+      transform: translateY(var(--lift-component));
+      box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.55), var(--glow-accent);
+    }
+  }
+  /* Touch gets a press response instead of a hover one. */
+  @media (hover: none) {
+    .pillar-card:nth-child(odd):active { @apply border-primary/40 bg-panel/32; }
+    .pillar-card:nth-child(even):active { @apply border-accent/40 bg-panel/32; }
+  }
+  /* The badge is a small solid tile, so it can take a gesture the card
+     itself shouldn't: a scale plus a few degrees of tilt. The tilt is
+     what makes it read as an object being picked up rather than a box
+     being resized — the reference site's own icon-tile move, and the
+     reason its cards feel handled rather than merely highlighted. It is
+     driven from the card's hover, not its own, so the whole card is one
+     interaction. */
+  .pillar-badge {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-primary font-mono text-small font-bold text-white;
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                background-color var(--motion-standard) var(--ease-soft);
+  }
+  .pillar-badge.is-accent {
+    @apply bg-accent;
+  }
+  @media (hover: hover) {
+    .pillar-card:hover .pillar-badge {
+      transform: scale(var(--zoom-badge)) rotate(var(--tilt-icon));
+    }
+  }
+  .pillar-card:focus-within .pillar-badge {
+    transform: scale(var(--zoom-badge)) rotate(var(--tilt-icon));
+  }
+}
+
+/* ==========================================================================
+   Brand particle field
+   ==========================================================================
+   #brandField is a fixed, full-viewport, pointer-events-none <canvas>
+   sitting behind everything (z-index below the page content, above the
+   flat base color) — the reference site's own node-and-line background
+   idea, redrawn in Atifinity's red/blue palette by background-motion.js.
+   No CSS animation here at all; the canvas draws every frame itself, and
+   node count/opacity are tuned per-viewport directly in that module
+   (fewer nodes on narrow screens — see its own Phase 49 handling).
+   ========================================================================== */
+@layer components {
+  #brandField {
+    @apply pointer-events-none fixed inset-0 -z-10 h-full w-full;
+  }
+
+  /* ---- Atmospheric layer -------------------------------------------------
+     Two very faint radial washes — one red, one blue — sitting behind the
+     node canvas to give the field depth, so the dots read as suspended in
+     something rather than floating on flat black. They drift on a very
+     long cycle (~48s and ~62s, deliberately co-prime-ish so the pair
+     never visibly repeats).
+
+     Opacity is kept low enough that the wash is only noticed
+     subconsciously; the moment it reads as a "glow" it has become a
+     crypto landing page. Transform-only animation, so it costs the
+     compositor almost nothing. */
+  #brandAtmosphere {
+    @apply pointer-events-none fixed inset-0 -z-20 h-full w-full;
+    background:
+      radial-gradient(42rem 32rem at 18% 22%, rgba(227, 34, 39, 0.10), transparent 70%),
+      radial-gradient(46rem 34rem at 84% 74%, rgba(30, 60, 255, 0.11), transparent 72%);
+    animation: atmosphere-drift 62s var(--ease-soft) infinite alternate;
+  }
+  @keyframes atmosphere-drift {
+    from { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+    to   { transform: translate3d(1.5%, 1.5%, 0) scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #brandAtmosphere { animation: none; }
+  }
+
+  /* ---- Context cursor ----------------------------------------------------
+     A small label that follows the pointer over media and names what a
+     click will do — VIEW over a screenshot, PLAY over a film. It is
+     additive only: every element it labels is already a real button with
+     its own accessible name, so the cursor is never the only place an
+     action is announced. Desktop fine-pointer only. */
+  #contextCursor {
+    @apply pointer-events-none fixed left-0 top-0 z-40 flex items-center justify-center rounded-full font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-white;
+    height: 68px;
+    width: 68px;
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.72);
+    background: var(--color-primary);
+    transition: opacity var(--motion-ui) var(--ease-soft),
+                transform var(--motion-ui) var(--ease-out-expo),
+                background-color var(--motion-ui) var(--ease-soft);
+  }
+  #contextCursor[data-active] {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+  /* PLAY is a commitment to watch something, so it takes the blue. */
+  #contextCursor[data-label="Play"] { background: var(--color-accent); }
+}
+
+/* ---- Portfolio horizontal strip -----------------------------------------
+   The "more work" browsing strip: a manually-scrollable, snap-aligned row
+   (drag/swipe/scroll, never auto-advancing) — the reference site's own
+   flowing-thumbnail rhythm, minus the auto-scroll-marquee usability cost
+   the design audit flagged. */
+@layer components {
+  .work-chip {
+    @apply w-[78vw] max-w-[320px] sm:w-[320px];
+  }
+}
+
+/* ---- Case studies strip ---------------------------------------------
+   Real client screenshots shown at a height where the numbers are
+   actually legible (the reference site's version of this shrank its
+   proof to unreadable thumbnails) — each image is capped to a fixed
+   height and sized to its own real aspect ratio (object-contain, never
+   cropped), with the caption flowing below at its natural size. */
+@layer components {
+  .case-shot {
+    @apply flex flex-col items-start;
+    max-width: 85vw;
+    transition: transform var(--motion-standard) var(--ease-out-expo);
+  }
+  .case-shot img {
+    @apply h-[280px] w-[400px] object-cover sm:h-[340px] sm:w-[480px];
+  }
+  @media (hover: hover) {
+    .case-shot:hover {
+      transform: scale(1.02);
+    }
+  }
+  
+  /* The whole screenshot is the control that opens it full size, so the
+     affordance has to be on the image itself: a zoom cursor, and a lift
+     + brightening border on hover/focus. */
+  .case-shot-trigger {
+    @apply block cursor-zoom-in overflow-hidden rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base;
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                box-shadow var(--motion-standard) var(--ease-soft);
+  }
+  .case-shot-trigger img {
+    transition: border-color var(--motion-standard) var(--ease-soft);
+  }
+  @media (hover: hover) {
+    .case-shot-trigger:hover {
+      transform: translateY(var(--lift-component));
+      box-shadow: 0 14px 34px -14px rgb(0 0 0 / 0.6), var(--glow-primary);
+    }
+  }
+  .case-shot-trigger:hover img,
+  .case-shot-trigger:focus-visible img {
+    @apply border-primary/40;
+  }
+
+  /* ---- Lightbox entrance -------------------------------------------------
+     The panel settles up out of a slight under-scale while the backdrop
+     fades. image-modal.js additionally runs a FLIP pass so the picture
+     travels from the thumbnail that was clicked into its final position,
+     which is what makes the modal feel like the same object enlarging
+     rather than a new one cutting in. */
+  .modal-panel {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+    transition: opacity var(--motion-standard) var(--ease-soft),
+                transform var(--motion-emphasis) var(--ease-out-expo);
+  }
+  .modal-backdrop {
+    opacity: 0;
+    transition: opacity var(--motion-standard) var(--ease-soft);
+  }
+  [data-modal-open] .modal-panel { opacity: 1; transform: translateY(0) scale(1); }
+  [data-modal-open] .modal-backdrop { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modal-panel, .modal-backdrop { transition: none; opacity: 1; transform: none; }
+  }
+}
+
+/* ==========================================================================
+   Hero entrance sequence — orchestrated by hero.js adding [data-hero-ready]
+   to #hero once fonts/layout are settled. Each piece is transform/opacity
+   only, staggered via transition-delay set inline per element so the
+   timing lives in one place (hero.js) rather than scattered CSS numbers.
+   ========================================================================== */
+@layer components {
+  [data-hero-in] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity var(--motion-cinematic) var(--ease-out-expo),
+                transform var(--motion-cinematic) var(--ease-out-expo);
+  }
+  [data-hero-ready] [data-hero-in] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---- Headline line-mask reveal ---------------------------------------
+     hero.js splits the headline into its real rendered lines and wraps
+     each one. Each line then rises out of its own clipping box, so the
+     headline assembles itself line by line instead of sliding up as one
+     rigid block — the difference between a composition arriving and a
+     div moving.
+
+     The padding/margin pair is load-bearing: the hero's line-height is
+     0.96, so an un-padded overflow:hidden box would shear the descenders
+     off "YouTube" and "Growth". The padding gives the glyphs room inside
+     the clip, and the equal negative margin takes that room back out of
+     the layout, so line spacing is unchanged. */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.16em;
+    margin-block: -0.16em;
+  }
+  .line-inner {
+    display: block;
+    transform: translateY(110%);
+    opacity: 0;
+    transition: transform var(--motion-cinematic) var(--ease-out-expo),
+                opacity var(--motion-cinematic) var(--ease-soft);
+  }
+  [data-hero-ready] .line-inner {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-hero-in] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .line-inner {
+      transform: none !important;
+      opacity: 1 !important;
+      transition: none !important;
+    }
+    .line-mask { overflow: visible; }
+  }
+}
+
+/* ==========================================================================
+   Reveal variants — the scroll rhythm
+   ==========================================================================
+   Every section used to arrive the same way: a 24px fade-up, seventeen
+   times. These give reveal.js a vocabulary instead of one word, so the
+   page has cadence — a rise, then a mask, then a stagger — rather than
+   the same event repeating until the reader stops noticing it.
+
+   All variants share one duration family and one curve, so the page
+   still reads as a single system; only the mechanism changes. Every
+   variant animates transform/opacity only, and each rests at its
+   finished state so nothing depends on JS to become readable.
+   ========================================================================== */
+@layer components {
+  /* Base state is applied by reveal.js only when the element is actually
+     going to be animated (offscreen at load), never in CSS — so with JS
+     off, or above the fold, content is simply visible. */
+  [data-reveal-state="hidden"] { opacity: 0; }
+  [data-reveal-state="shown"] { opacity: 1; transform: none; }
+
+  [data-reveal-variant="rise"][data-reveal-state="hidden"] {
+    transform: translateY(24px);
+  }
+  /* Wider travel + a touch of scale, for section headers that should
+     feel like they arrive rather than appear. */
+  [data-reveal-variant="lift"][data-reveal-state="hidden"] {
+    transform: translateY(38px) scale(0.985);
+  }
+  /* Horizontal entry, used where the layout itself is horizontal. The
+     reference site pairs these — content entering from the left and from
+     the right on opposite sides of a split row — so both directions
+     exist here rather than one. Lateral travel is wider than vertical
+     (44px vs 24px) because sideways movement over a short distance reads
+     as a jitter rather than as an entrance. */
+  [data-reveal-variant="slide"][data-reveal-state="hidden"] {
+    transform: translateX(calc(var(--travel-lateral) * -1));
+  }
+  [data-reveal-variant="slide-right"][data-reveal-state="hidden"] {
+    transform: translateX(var(--travel-lateral));
+  }
+  /* Arrival from above. Reserved for elements that belong to the top of
+     their own space — an eyebrow, a sticky bar, a section's kicker —
+     so the direction of travel matches where the thing lives. */
+  [data-reveal-variant="drop"][data-reveal-state="hidden"] {
+    transform: translateY(-22px);
+  }
+  /* The one reveal with real scale in it: the element expands into place
+     rather than sliding. The reference uses scale(0.8) on its small
+     floating glass cards; that much shrink on a full-width block reads as
+     the page zooming, so this keeps the mechanism and pulls the value to
+     0.9 — enough that the arrival is unmistakably a different event from
+     a rise, not so much that the layout appears to breathe. */
+  [data-reveal-variant="pop"][data-reveal-state="hidden"] {
+    transform: translateY(20px) scale(0.9);
+  }
+  /* Clip reveal for imagery: the frame is already there, the picture
+     wipes into it and settles out of a slight over-scale. */
+  [data-reveal-variant="clip"] {
+    clip-path: inset(0 0 0 0);
+    transition-property: opacity, transform, clip-path;
+  }
+  [data-reveal-variant="clip"][data-reveal-state="hidden"] {
+    clip-path: inset(0 0 100% 0);
+    transform: scale(1.04);
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+@layer utilities {
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+
+  /* Portfolio hover-preview: poster shows by default, preview <video>
+     crossfades in on hover/focus (desktop) or when [data-in-view] is set
+     by portfolio.js (mobile/viewport-based). */
+  .work-preview video {
+    @apply opacity-0;
+    transition: opacity var(--motion-emphasis) var(--ease-soft);
+  }
+  .work-preview:hover video,
+  .work-preview:focus-within video,
+  .work-preview[data-playing] video {
+    @apply opacity-100;
+  }
+
+  /* The play mark, shared by all 17 portfolio triggers. It was the same
+     six declarations repeated in markup on every card; as one class the
+     badge tempo is a single edit rather than seventeen. Small UI marks
+     can afford more scale than imagery can — see --zoom-badge. */
+  .play-badge {
+    @apply flex items-center justify-center rounded-full bg-primary/90 text-white;
+    transition: transform var(--motion-ui) var(--ease-out-expo),
+                background-color var(--motion-ui) var(--ease-soft),
+                box-shadow var(--motion-ui) var(--ease-soft);
+  }
+  /* The badge is a circle, so the tilt is invisible on the disc itself
+     and reads only on the triangle inside it — which is the whole point:
+     the mark cocks slightly, the frame around it does not, and the eye
+     registers "this is the thing you press". */
+  @media (hover: hover) {
+    .group:hover .play-badge {
+      transform: scale(var(--zoom-badge)) rotate(var(--tilt-icon));
+      @apply bg-primary;
+      box-shadow: 0 0 26px rgb(var(--raw-primary) / 0.45);
+    }
+    [data-work-item]:nth-child(even) .group:hover .play-badge,
+    .work-chip:nth-child(even).group:hover .play-badge {
+      @apply bg-accent;
+      box-shadow: 0 0 26px rgb(var(--raw-accent) / 0.45);
+    }
+  }
+  .group:focus-within .play-badge {
+    transform: scale(var(--zoom-badge)) rotate(var(--tilt-icon));
+    box-shadow: 0 0 26px rgb(var(--raw-primary) / 0.45);
+  }
+  [data-work-item]:nth-child(even) .group:focus-within .play-badge,
+  .work-chip:nth-child(even).group:focus-within .play-badge {
+    box-shadow: 0 0 26px rgb(var(--raw-accent) / 0.45);
+  }
+
+  /* ---- Coordinated work-item interaction --------------------------------
+     One hover, one timeline. Hovering anywhere on a work item — the
+     image OR its title block — runs the whole set together: the frame
+     drifts in, the scrim lifts, the badge grows, the title steps
+     forward and its arrow advances. Before this, the title lived in a
+     sibling element outside the button's .group and could not respond at
+     all, so the interaction stopped dead at the edge of the image.
+
+     The image moves least (1.06) and the UI around it moves most: the
+     content stays calm, the interface does the talking. Keyboard focus
+     on the button drives the identical state, so nothing here is
+     mouse-only. */
+  /* The frame itself joins the hover: border toward the brand hue and a
+     halo around the whole picture. On a 60%-width video frame the halo
+     is what makes the hovered item read as *selected* from the column of
+     seventeen, which a zoom alone never quite does. */
+  .work-preview {
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                border-color var(--motion-ui) var(--ease-soft),
+                box-shadow var(--motion-ui) var(--ease-soft);
+  }
+  .work-preview img,
+  .work-preview video {
+    transition: opacity var(--motion-emphasis) var(--ease-soft);
+  }
+  .work-title {
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                color var(--motion-standard) var(--ease-soft);
+  }
+  .work-cue {
+    @apply inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-ink-muted;
+    opacity: 0;
+    transform: translateY(2px);
+    transition: transform var(--motion-standard) var(--ease-out-expo),
+                opacity var(--motion-standard) var(--ease-soft);
+  }
+  .work-cue .motion-arrow {
+    transition: transform var(--motion-standard) var(--ease-out-expo);
+  }
+
+  /* Interaction: hover, focus, and viewport-trigger (mobile) - see
+     portfolio.js. The cue text slides in from below, the play badge zooms
+     in from behind, and the card's border + shadow bloom into brand colors
+     while the video crossfades in. The specific brand color (odd/even)
+     is what makes the hovered item read as *selected* from the column of
+     seventeen, which a zoom alone never quite does. */
+  @media (hover: hover) {
+    [data-work-item]:nth-child(odd):hover .work-preview,
+    .work-chip:nth-child(odd):hover {
+      @apply border-primary/40;
+      box-shadow: var(--glow-primary-lg);
+      transform: scale(1.02);
+    }
+    [data-work-item]:nth-child(even):hover .work-preview,
+    .work-chip:nth-child(even):hover {
+      @apply border-accent/40;
+      box-shadow: var(--glow-accent-lg);
+      transform: scale(1.02);
+    }
+    [data-work-item]:hover .work-title { transform: translateX(var(--nudge-title)); }
+    [data-work-item]:hover .work-cue { opacity: 1; transform: translateY(0); }
+    [data-work-item]:hover .work-cue .motion-arrow { transform: translateX(var(--nudge-icon)); }
+  }
+  [data-work-item]:nth-child(odd):focus-within .work-preview,
+  .work-chip:nth-child(odd):focus-within {
+    @apply border-primary/40;
+    box-shadow: var(--glow-primary-lg);
+  }
+  [data-work-item]:nth-child(even):focus-within .work-preview,
+  .work-chip:nth-child(even):focus-within {
+    @apply border-accent/40;
+    box-shadow: var(--glow-accent-lg);
+  }
+  [data-work-item]:focus-within .work-preview img,
+  [data-work-item]:focus-within .work-preview video,
+  .work-chip:focus-within img,
+  .work-chip:focus-within video {
+    transform: scale(var(--zoom-image));
+  }
+  [data-work-item]:focus-within .work-cue { opacity: 1; transform: translateY(0); }
+}
