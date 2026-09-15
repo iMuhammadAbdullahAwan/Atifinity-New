@@ -53,6 +53,10 @@ Atifinity.initBackgroundMotion = function initBackgroundMotion() {
   var LOGO_MIN_SPEED = 0.22;
   var LOGO_MAX_SPEED = 0.55;
   var LOGO_WANDER = 0.014;
+  var LOGO_REPEL_DIST = 120;
+  var LOGO_REPEL_STRENGTH = 0.008;
+  var LOGO_NODE_BUFFER = 80;
+  var LOGO_NODE_PUSH = 0.012;
 
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var width = 0;
@@ -69,6 +73,17 @@ Atifinity.initBackgroundMotion = function initBackgroundMotion() {
   // scroll instead of the field ever visibly running out or jumping.
   var scrollY = window.scrollY || 0;
   var PARALLAX = 0.12;
+  var MAX_PARTICLE_DEGREE = 2;
+  var MIN_EDGE_LEN = 40;
+  var MAX_EDGE_LEN = 130;
+  var MIN_EDGE_LEN_SQ = MIN_EDGE_LEN * MIN_EDGE_LEN;
+  var MAX_EDGE_LEN_SQ = MAX_EDGE_LEN * MAX_EDGE_LEN;
+  var MIN_COMPACTNESS = 0.45;    // min(side) / max(side) — rejects skinny triangles
+
+  // Reusable per-frame buffers for the triangle-cluster builder — sized
+  // once in seed(), cleared and filled every frame in drawFrame().
+  var _deg = [];   // per-particle connection count
+  var _adj = [];   // flat n×n pair-distance map (0 = no valid pair)
 
   function particleCount(w) {
     if (w < 640) return 18;
@@ -101,23 +116,42 @@ Atifinity.initBackgroundMotion = function initBackgroundMotion() {
         vx: (Math.random() - 0.5) * 0.18,
         vy: (Math.random() - 0.5) * 0.18,
         r: Math.random() * 1.4 + 1.1,
-        color: COLORS[i % 2]
+        color: COLORS[i % 2],
+        // Per-particle pulse: a random starting phase + a per-dot speed
+        // (~20-40s per cycle) keeps the field from ever blinking in
+        // lockstep, so each red/blue dot glows on its own rhythm.
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.015 + Math.random() * 0.015
       });
     }
+
+    // Size the triangle-cluster bookkeeping for the current particle count.
+    _deg = new Array(count);
+    _adj = new Array(count * count);
 
     // Marks live in their own array, so the link loop below can't see
     // them at all — that's what keeps each one independent of the
     // network and of the other marks. Each starts on a random heading
     // at a random speed inside the band.
+    //
+    // Stratified sampling: divide the viewport into a grid of cells and
+    // place one mark per cell with random jitter — this guarantees an
+    // even spatial spread on every seed while still looking organic.
     var lCount = logoCount(width);
     var baseScale = logoBaseScale(width);
     logos = [];
+    var cols = Math.max(1, Math.ceil(Math.sqrt(lCount * (width / height))));
+    var rows = Math.max(1, Math.ceil(lCount / cols));
+    var cellW = width / cols;
+    var cellH = height / rows;
     for (var j = 0; j < lCount; j++) {
+      var col = j % cols;
+      var row = Math.floor(j / cols);
       var angle = Math.random() * Math.PI * 2;
       var speed = LOGO_MIN_SPEED + Math.random() * (LOGO_MAX_SPEED - LOGO_MIN_SPEED);
       logos.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
+        x: (col + 0.15 + Math.random() * 0.7) * cellW,
+        y: (row + 0.15 + Math.random() * 0.7) * cellH,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         rotation: Math.random() * Math.PI * 2,
@@ -221,13 +255,51 @@ Atifinity.initBackgroundMotion = function initBackgroundMotion() {
         else if (p.x > width) p.x = 0;
         if (p.y < 0) p.y = height;
         else if (p.y > height) p.y = 0;
+        p.pulse += p.pulseSpeed;
       });
 
-      logos.forEach(function (l) {
+      for (var li = 0; li < logos.length; li++) {
+        var l = logos[li];
         // Random walk: nudge the heading, then pull the speed back into
         // the band so it neither stalls nor runs away.
         l.vx += (Math.random() - 0.5) * LOGO_WANDER;
         l.vy += (Math.random() - 0.5) * LOGO_WANDER;
+
+        // Soft logo-to-logo repulsion — keeps marks from clustering
+        // during random-walk drift. The push is proportional to how
+        // far inside the threshold the pair is, so it fades to zero
+        // at the edge and never causes a visible bounce.
+        for (var lj = 0; lj < logos.length; lj++) {
+          if (lj === li) continue;
+          var other = logos[lj];
+          var rdx = l.x - other.x;
+          var rdy = l.y - other.y;
+          if (Math.abs(rdy) > height / 2) continue;
+          var rd2 = rdx * rdx + rdy * rdy;
+          if (rd2 < LOGO_REPEL_DIST * LOGO_REPEL_DIST && rd2 > 0.001) {
+            var rd = Math.sqrt(rd2);
+            var pushFactor = (1 - rd / LOGO_REPEL_DIST) * LOGO_REPEL_STRENGTH;
+            l.vx += (rdx / rd) * pushFactor;
+            l.vy += (rdy / rd) * pushFactor;
+          }
+        }
+
+        // Soft logo-to-particle avoidance — steers marks away from
+        // the network's nodes so they don't sit on top of dots/lines.
+        for (var pi = 0; pi < particles.length; pi++) {
+          var pt = particles[pi];
+          var ndx = l.x - pt.x;
+          var ndy = l.y - pt.y;
+          if (Math.abs(ndy) > height / 2) continue;
+          var nd2 = ndx * ndx + ndy * ndy;
+          if (nd2 < LOGO_NODE_BUFFER * LOGO_NODE_BUFFER && nd2 > 0.001) {
+            var nd = Math.sqrt(nd2);
+            var nodePush = (1 - nd / LOGO_NODE_BUFFER) * LOGO_NODE_PUSH;
+            l.vx += (ndx / nd) * nodePush;
+            l.vy += (ndy / nd) * nodePush;
+          }
+        }
+
         var speed = Math.sqrt(l.vx * l.vx + l.vy * l.vy);
         if (speed > LOGO_MAX_SPEED) {
           l.vx = (l.vx / speed) * LOGO_MAX_SPEED;
@@ -252,7 +324,7 @@ Atifinity.initBackgroundMotion = function initBackgroundMotion() {
         else if (l.y > height) l.y = 0;
         l.rotation += l.rotationSpeed;
         l.pulse += l.pulseSpeed;
-      });
+      }
     }
 
     // Resolve every on-screen y once per frame. Both the link test and
@@ -261,31 +333,105 @@ Atifinity.initBackgroundMotion = function initBackgroundMotion() {
     particles.forEach(function (p) { p.sy = screenY(p.y); });
     logos.forEach(function (l) { l.sy = screenY(l.y); });
 
+    // --- Sparse triangle clusters ---------------------------------------
+    // Build small independent triangular groups rather than one globally
+    // connected network.  Stage 1 populates a pair-distance map inside
+    // the pre-allocated _adj buffer, Stage 2 enumerates compact triangle
+    // candidates, Stage 3 greedily selects the best ones under a strict
+    // per-particle degree cap, and Stage 4 draws their edges.
+    //
     // Links first (so dots draw on top of their own connecting lines).
     // Only ever dot-to-dot — the marks aren't in this array.
-    for (var i = 0; i < particles.length; i++) {
-      for (var j = i + 1; j < particles.length; j++) {
-        var a = particles[i];
-        var b = particles[j];
-        var dx = a.x - b.x;
-        var dy = a.sy - b.sy;
-        var distSq = dx * dx + dy * dy;
-        if (distSq < LINK_DISTANCE_SQ) {
-          var t = 1 - distSq / LINK_DISTANCE_SQ;
-          ctx.strokeStyle = 'rgba(122,150,255,' + (t * 0.14).toFixed(3) + ')';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.sy);
-          ctx.lineTo(b.x, b.sy);
-          ctx.stroke();
+    var n = particles.length;
+    var nSq = n * n;
+
+    // Stage 1 — pair-distance map.
+    for (var i = 0; i < nSq; i++) _adj[i] = 0;
+    for (var i = 0; i < n; i++) {
+      for (var j = i + 1; j < n; j++) {
+        var dx = particles[i].x - particles[j].x;
+        var dy = particles[i].sy - particles[j].sy;
+        // Existing wrap-seam protection.
+        if (Math.abs(dy) > height / 2) continue;
+        var dSq = dx * dx + dy * dy;
+        if (dSq < MIN_EDGE_LEN_SQ || dSq > MAX_EDGE_LEN_SQ) continue;
+        var dist = Math.sqrt(dSq);
+        _adj[i * n + j] = dist;
+        _adj[j * n + i] = dist;
+      }
+    }
+
+    // Stage 2 — enumerate compact triangle candidates.
+    var tris = [];
+    for (var i = 0; i < n; i++) {
+      for (var j = i + 1; j < n; j++) {
+        var dij = _adj[i * n + j];
+        if (dij === 0) continue;
+        for (var k = j + 1; k < n; k++) {
+          var dik = _adj[i * n + k];
+          if (dik === 0) continue;
+          var djk = _adj[j * n + k];
+          if (djk === 0) continue;
+          // All three sides valid — check compactness.
+          var mn = Math.min(dij, dik, djk);
+          var mx = Math.max(dij, dik, djk);
+          var compact = mn / mx;
+          if (compact < MIN_COMPACTNESS) continue;
+          // Score: compactness first, shorter perimeter as tiebreaker.
+          tris.push({ a: i, b: j, c: k, s: compact - (dij + dik + djk) * 0.0001 });
         }
       }
     }
 
+    // Stage 3 — greedy selection (best compact triangles first).
+    tris.sort(function (x, y) { return y.s - x.s; });
+    for (var i = 0; i < n; i++) _deg[i] = 0;
+
+    for (var t = 0; t < tris.length; t++) {
+      var ta = tris[t].a, tb = tris[t].b, tc = tris[t].c;
+      if (_deg[ta] >= MAX_PARTICLE_DEGREE ||
+          _deg[tb] >= MAX_PARTICLE_DEGREE ||
+          _deg[tc] >= MAX_PARTICLE_DEGREE) continue;
+      // Accept — each vertex gains exactly 2 connections (the other two
+      // corners), which is the natural degree of a triangle vertex.
+      _deg[ta] += 2; _deg[tb] += 2; _deg[tc] += 2;
+
+      // Stage 4 — draw the three edges of this triangle.
+      var pa = particles[ta], pb = particles[tb], pc = particles[tc];
+      var d1 = _adj[ta * n + tb], d2 = _adj[tb * n + tc], d3 = _adj[ta * n + tc];
+      var t1 = 1 - (d1 * d1) / LINK_DISTANCE_SQ;
+      var t2 = 1 - (d2 * d2) / LINK_DISTANCE_SQ;
+      var t3 = 1 - (d3 * d3) / LINK_DISTANCE_SQ;
+
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(122,150,255,' + (t1 * 0.14).toFixed(3) + ')';
+      ctx.beginPath(); ctx.moveTo(pa.x, pa.sy); ctx.lineTo(pb.x, pb.sy); ctx.stroke();
+      ctx.strokeStyle = 'rgba(122,150,255,' + (t2 * 0.14).toFixed(3) + ')';
+      ctx.beginPath(); ctx.moveTo(pb.x, pb.sy); ctx.lineTo(pc.x, pc.sy); ctx.stroke();
+      ctx.strokeStyle = 'rgba(122,150,255,' + (t3 * 0.14).toFixed(3) + ')';
+      ctx.beginPath(); ctx.moveTo(pa.x, pa.sy); ctx.lineTo(pc.x, pc.sy); ctx.stroke();
+    }
+
+    // Particle rendering — each dot pulses/glows in its OWN color (red
+    // stays red, blue stays blue).  The pulse modulates intensity and
+    // adds a subtle outer glow ring; desynchronised phases ensure the
+    // field never strobes.
     particles.forEach(function (p) {
+      var breath = Math.sin(p.pulse) * 0.5 + 0.5; // 0 … 1
+      var alpha = 0.40 + breath * 0.40;            // 0.40 … 0.80
+
+      // Subtle outer glow (same color, lower alpha, larger radius).
+      if (breath > 0.25) {
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(' + p.color + ',' + (breath * 0.10).toFixed(3) + ')';
+        ctx.arc(p.x, p.sy, p.r + 2.5 + breath * 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Core dot.
       ctx.beginPath();
-      ctx.fillStyle = 'rgba(' + p.color + ',0.55)';
-      ctx.arc(p.x, p.sy, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + p.color + ',' + alpha.toFixed(3) + ')';
+      ctx.arc(p.x, p.sy, p.r + breath * 0.3, 0, Math.PI * 2);
       ctx.fill();
     });
 
