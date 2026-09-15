@@ -33,6 +33,13 @@
 
 <link rel="preload" as="image" href="assets/portfolio/posters/america-bridge.jpg" fetchpriority="high" />
 
+<!-- Applies a saved typography theme (see src/js/modules/typography.js)
+     before the stylesheet loads, so there's no flash of Geist swapping to
+     the chosen font on repeat visits. No-ops if nothing is saved. -->
+<script>
+(function(){var t=localStorage.getItem('atifinity.typography');if(!t)return;try{var d=JSON.parse(t);var r=document.documentElement.style;if(d.h)r.setProperty('--font-heading',d.h);if(d.b){r.setProperty('--font-body',d.b);r.setProperty('--font-sans',d.b);r.setProperty('--font-display',d.b);}if(d.u)r.setProperty('--font-ui',d.u);if(d.url){var l=document.createElement('link');l.rel='stylesheet';l.href=d.url;l.id='atifinity-typo-fonts';document.head.appendChild(l);}}catch(e){}})();
+</script>
+
 <!-- Compiled by `npm run build` from src/css/input.css — never edited by hand. -->
 <link rel="stylesheet" href="dist/css/output.css" />
 </head>

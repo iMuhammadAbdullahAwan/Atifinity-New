@@ -41,6 +41,13 @@
 :root {
   color-scheme: dark;
 
+  /* Typography theme roles — set at runtime by the typography engine
+     (src/js/modules/typography.js). Defaults match the self-hosted Geist
+     so the site works identically without JS. */
+  --font-heading: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Geist", ui-sans-serif, system-ui, sans-serif;
+
   --color-bg: 8 9 15;          /* #08090F — base page ground */
   --color-surface: 19 22 31;   /* #13161F — row / card surface */
   --color-surface-elevated: 25 29 40; /* #191D28 — the ONE elevated surface */
@@ -195,6 +202,7 @@
 
   body {
     @apply bg-base text-ink font-sans antialiased;
+    font-family: var(--font-body);
     font-weight: 400;
     /* Reveals that travel in from the right park their element a few
        dozen pixels past the viewport's right edge for the length of the
@@ -212,7 +220,13 @@
 
   h1, h2, h3 {
     @apply font-display font-bold text-ink;
+    font-family: var(--font-heading);
     text-wrap: balance;
+  }
+
+  button, [type="button"], [type="submit"], [type="reset"],
+  input, textarea, select {
+    font-family: var(--font-ui);
   }
 
   a {

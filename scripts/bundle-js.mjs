@@ -12,6 +12,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 const files = [
+  'dist/js/modules/typography.js',
   'dist/js/modules/whatsapp.js',
   'dist/js/modules/nav.js',
   'dist/js/modules/reveal.js',

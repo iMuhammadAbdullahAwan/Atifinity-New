@@ -16,6 +16,7 @@
     var yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+    Atifinity.initTypography && Atifinity.initTypography();
     Atifinity.initWhatsApp && Atifinity.initWhatsApp();
     Atifinity.initNav && Atifinity.initNav();
     Atifinity.initReveal && Atifinity.initReveal();
