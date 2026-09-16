@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@source "../../wp-theme/atifinity/**/*.php";
 
 /* ---------- Fonts ----------
    Geist / Geist Mono, self-hosted — the exact same family the reference
@@ -1489,13 +1491,16 @@
      seventeen, which a zoom alone never quite does. */
   @media (hover: hover) {
     [data-work-item]:nth-child(odd):hover .work-preview,
-    .work-chip:nth-child(odd):hover {
+    .work-chip:nth-child(odd):hover,
+    .blog-card-hover:nth-child(odd):hover,
+    .blog-hero-hover:hover {
       @apply border-primary/40;
       box-shadow: var(--glow-primary-lg);
       transform: scale(1.02);
     }
     [data-work-item]:nth-child(even):hover .work-preview,
-    .work-chip:nth-child(even):hover {
+    .work-chip:nth-child(even):hover,
+    .blog-card-hover:nth-child(even):hover {
       @apply border-accent/40;
       box-shadow: var(--glow-accent-lg);
       transform: scale(1.02);
@@ -1505,12 +1510,15 @@
     [data-work-item]:hover .work-cue .motion-arrow { transform: translateX(var(--nudge-icon)); }
   }
   [data-work-item]:nth-child(odd):focus-within .work-preview,
-  .work-chip:nth-child(odd):focus-within {
+  .work-chip:nth-child(odd):focus-within,
+  .blog-card-hover:nth-child(odd):focus-within,
+  .blog-hero-hover:focus-within {
     @apply border-primary/40;
     box-shadow: var(--glow-primary-lg);
   }
   [data-work-item]:nth-child(even):focus-within .work-preview,
-  .work-chip:nth-child(even):focus-within {
+  .work-chip:nth-child(even):focus-within,
+  .blog-card-hover:nth-child(even):focus-within {
     @apply border-accent/40;
     box-shadow: var(--glow-accent-lg);
   }
@@ -1521,4 +1529,30 @@
     transform: scale(var(--zoom-image));
   }
   [data-work-item]:focus-within .work-cue { opacity: 1; transform: translateY(0); }
+}
+@media (hover: hover) {
+  .blog-card-hover:nth-child(odd):hover .blog-card-title {
+    @apply text-primary;
+  }
+  .blog-card-hover:nth-child(even):hover .blog-card-title {
+    @apply text-accent;
+  }
+}
+.blog-card-hover:nth-child(odd):focus-within .blog-card-title {
+  @apply text-primary;
+}
+.blog-card-hover:nth-child(even):focus-within .blog-card-title {
+  @apply text-accent;
+}
+.blog-card-hover:nth-child(odd) .blog-card-badge {
+  @apply border-primary/20 bg-primary/5 text-primary;
+}
+.blog-card-hover:nth-child(even) .blog-card-badge {
+  @apply border-accent/20 bg-accent/5 text-accent;
+}
+.blog-card-hover:nth-child(odd) .blog-card-readmore {
+  @apply text-primary;
+}
+.blog-card-hover:nth-child(even) .blog-card-readmore {
+  @apply text-accent;
 }
